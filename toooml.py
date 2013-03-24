@@ -12,9 +12,7 @@ tokens = (
     "STRING",
     "FLOAT",
     "INTEGER",
-    "BOOLEN",
-    "ARRAY",
-    "HASH",
+    "BOOLEN"
 )
 
 literals = ["[", "]", ","]
