@@ -8,11 +8,11 @@ tokens = (
     "KEY",
     "KEYGROUP",
     "EQUALS",
+    "DATETIME",
     "STRING",
     "FLOAT",
     "INTEGER",
     "BOOLEN",
-    "DATETIME",
     "ARRAY",
     "HASH",
 )
@@ -31,9 +31,9 @@ def t_newline(t):
 def t_error(t):
     raise TomlSyntaxError(repr(t))
 
-t_EQUALS = r"="
-
 t_KEY = r'[a-zA-Z_][a-zA-Z0-9_]*'
+
+t_EQUALS = r"="
 
 def t_KEYGROUP(t):
     r'\[([a-zA-Z_][a-zA-Z0-9_]*\.?)+\]'
