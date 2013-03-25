@@ -17,7 +17,7 @@ from re import UNICODE
 \\     - backslash       (U+005C)
 \uXXXX - unicode         (U+XXXX)
 """
-ES = r"(\\(['\"\\bfnrtu]|[0-7]{1,3}|x[a-fA-F0-9]+))"
+ES = r"(\\([btnfr\"/\\u]|[0-7]{1,3}|x[a-fA-F0-9]+))"
 
 STR = r'\"([^"\\\n]|'+ES+')*\"'
 
