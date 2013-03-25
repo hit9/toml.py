@@ -1,8 +1,11 @@
 from ply import lex
 from ply import yacc
+from datetime import datetime
 
+class TomlSyntaxError(SyntaxError):
+    pass
 
-class TomlSyntaxError(SyntaxError):pass
+ISO8601 = '%Y-%m-%dT%H:%M:%SZ'
 
 tokens = (
     "KEY",
@@ -20,6 +23,7 @@ literals = ["[", "]", ","]
 # ignore space(x20) and tab(x09)
 t_ignore = "\x20\x09"
 # comments
+
 t_ignore_COMMENT = r'\#.*'
 
 def t_newline(t):
@@ -27,8 +31,12 @@ def t_newline(t):
     t.lexer.lineno += len(t.value)
 
 def t_error(t):
-    raise TomlSyntaxError(repr(t))
+    raise TomlSyntaxError(
+        "Illegal character '%s' at line %d" % (t.value[0], t.lexer.lineno)
+    )
 
+
+# regexp tokens
 t_KEY = r'[a-zA-Z_][a-zA-Z0-9_]*'
 
 t_EQUALS = r"="
@@ -38,17 +46,12 @@ def t_KEYGROUP(t):
     t.value = tuple(t.value[1:-1].split('.'))
     return t
 
-from datetime import datetime
-
-ISO8601_FORMAT = '%Y-%m-%dT%H:%M:%SZ'
-
 def t_DATETIME(t):
     r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z'
-    t.value = datetime.strptime(t.value, ISO8601_FORMAT)
+    t.value = datetime.strptime(t.value, ISO8601)
     return t
 
 def t_STRING(t):
-    #TODO: escape stuff
     r'\"([^\"]|\\.)*\"'
     t.value = t.value[1:-1]
     return t
@@ -70,6 +73,8 @@ def t_BOOLEN(t):
 
 # build lexer
 lex.lex()
+
+# tests
 text = open("test.toml").read().decode("utf8")
 lex.input(text)
 while 1:
