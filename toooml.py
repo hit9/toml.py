@@ -6,7 +6,18 @@ from datetime import datetime
 from re import UNICODE
 
 # escape string
-ES = r"""(\\(['"\?\\abfnrtv]|[0-7]{1,3}|x[a-fA-F0-9]+))"""
+"""
+\b     - backspace       (U+0008)
+\t     - tab             (U+0009)
+\n     - linefeed        (U+000A)
+\f     - form feed       (U+000C)
+\r     - carriage return (U+000D)
+\"     - quote           (U+0022)
+\/     - slash           (U+002F)
+\\     - backslash       (U+005C)
+\uXXXX - unicode         (U+XXXX)
+"""
+ES = r"(\\(['\"\\bfnrtu]|[0-7]{1,3}|x[a-fA-F0-9]+))"
 
 STR = r'\"([^"\\\n]|'+ES+')*\"'
 
@@ -101,4 +112,5 @@ while 1:
     tok = lex.token()
     if not tok:
         break
+    print tok
     print tok.value
