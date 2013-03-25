@@ -68,7 +68,7 @@ def t_BOOLEN(t):
     t.value = t.value == "true"
     return t
 
-
+# build lexer
 lex.lex()
 text = open("test.toml").read().decode("utf8")
 lex.input(text)
