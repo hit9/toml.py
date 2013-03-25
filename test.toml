@@ -1,11 +1,8 @@
 "string"
 1979-05-27T07:32:00Z
 true false
-.xx
 1.8
-
-key
 
 [a.b.c]
 
-=
+name = u"王超"

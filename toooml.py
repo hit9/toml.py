@@ -1,6 +1,8 @@
+#coding=utf8
 from ply import lex
 from ply import yacc
 from datetime import datetime
+from re import UNICODE
 
 class TomlSyntaxError(SyntaxError):
     pass
@@ -32,14 +34,17 @@ def t_newline(t):
 
 def t_error(t):
     raise TomlSyntaxError(
-        "Illegal character '%s' at line %d" % (t.value[0], t.lexer.lineno)
+        u"Illegal character '{0}' at line {1}".format(t.value[0], t.lexer.lineno)
     )
 
 
 # regexp tokens
-t_KEY = r'[a-zA-Z_][a-zA-Z0-9_]*'
-
 t_EQUALS = r"="
+
+# function tokens
+def t_KEY(t):
+    r'[a-zA-Z_][a-zA-Z0-9_]*'
+    return t
 
 def t_KEYGROUP(t):
     r'\[([a-zA-Z_][a-zA-Z0-9_]*\.?)+\]'
@@ -72,7 +77,7 @@ def t_BOOLEN(t):
     return t
 
 # build lexer
-lex.lex()
+lex.lex(reflags=UNICODE)
 
 # tests
 text = open("test.toml").read().decode("utf8")
