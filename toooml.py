@@ -57,7 +57,7 @@ def t_DATETIME(t):
     return t
 
 def t_STRING(t):
-    r'\"([^\"]|\\.)*\"'
+    r'[a-zA-Z_]?\"(\\.|[^\\"])*\"'
     t.value = t.value[1:-1]
     return t
 
@@ -85,4 +85,4 @@ lex.input(text)
 while 1:
     tok = lex.token()
     if not tok: break
-    print tok
+    print tok.value
