@@ -50,7 +50,7 @@ def t_newline(t):
     r'\n+'
     t.lexer.lineno += len(t.value)
 
-
+#TODO: to specific the collum in error position
 def t_error(t):
     raise TomlSyntaxError(
         u"Illegal character '{0}' at line {1}".format(
