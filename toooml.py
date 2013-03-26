@@ -216,3 +216,9 @@ def loads(s):
         return parser.parse(s)
     # return {} if s is empty
     return {}
+
+if __name__ == '__main__':
+    import sys
+    sys.exit(
+        loads(sys.stdin.read())
+    )

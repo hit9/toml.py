@@ -1,9 +1,8 @@
 from setuptools import setup
-from toooml import __version__
 
 setup(
     name="toooml",
-    version=__version__,
+    version="0.1",
     author="hit9",
     author_email="nz2324@126.com",
     description=(
