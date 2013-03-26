@@ -7,6 +7,8 @@
 # License: MIT
 #
 
+__version__ = '0.1'
+
 from ply import lex
 from ply import yacc
 from ply.lex import TOKEN
