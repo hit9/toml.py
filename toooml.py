@@ -1,4 +1,11 @@
-#coding=utf8
+# coding=utf8
+#
+# Python parser for toml (Tom's Obvious, Minimal Language)
+# Home: https://github.com/mojombo/toml
+# Note: This is an improved version of toml-ply(https://github.com/marksteve/toml-ply)
+# License: MIT
+#
+
 from ply import lex
 from ply import yacc
 from ply.lex import TOKEN
@@ -21,7 +28,7 @@ from re import UNICODE
 # see mojombo/toml/issue#173. I dont want to escape forward slashes
 ES = r"(\\([btnfr\"\\u]|[0-7]{1,3}|x[a-fA-F0-9]+))"
 
-STR = r'\"([^"\\\n]|'+ES+')*\"'
+STR = r'\"([^"\\\n]|' + ES + ')*\"'
 
 
 class TomlSyntaxError(SyntaxError):
@@ -111,7 +118,7 @@ def t_BOOLEN(t):
 # build lexer
 lex.lex(reflags=UNICODE)
 
-#return dict
+# return dict
 dct = None
 
 
@@ -119,8 +126,6 @@ def p_error(p):
     raise TomlSyntaxError(
         "SyntaxError at '%r'" % (p, )
     )
-
-
 
 
 # start rule, store dct
