@@ -4,3 +4,46 @@ toooml
 Python parser for [mojombo/toml](https://github.com/mojombo/toml).
 
 Improved version of [marksteve/toml-ply](https://github.com/marksteve/toml-ply)
+
+Support
+-------
+
+Version [V0.1](https://github.com/mojombo/toml/blob/master/versions/toml-v0.1.0.md) of toml.
+
+Use
+----
+
+```python
+>>> import toooml as toml
+>>> toml.loads("""
+... [blog]
+... [blog.author]
+... name = "Tom"
+... age = 14
+... score = 9.99
+... """)
+{'blog': {'author': {'age': 14, 'score': 9.99, 'name': 'Tom'}}}
+```
+
+Unicode string are also supported:
+
+```python
+>>> toml.loads(u"""
+... name = "\u6c64\u59c6"
+... """)
+{u'name': u'\u6c64\u59c6'}
+```
+
+Empty input:
+
+```python
+>>> toml.loads("")
+{}
+```
+
+TODO
+----
+
+1. error handle
+
+2. write tests
