@@ -218,7 +218,4 @@ def loads(s):
     return {}
 
 if __name__ == '__main__':
-    import sys
-    sys.exit(
-        loads(sys.stdin.read())
-    )
+    exit(loads(raw_input()))

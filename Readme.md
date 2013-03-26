@@ -41,6 +41,16 @@ Empty input:
 {}
 ```
 
+from command line:
+
+```
+$ cat some.toml | python -m toooml
+{'name': 'Tom'}
+$ echo "n = 1.3" | python -m toooml
+{'n': 1.3}
+
+```
+
 TODO
 ----
 
