@@ -64,5 +64,3 @@ TODO
 1. error handle
 
 2. write tests
-
-3. fix negative nubmer in integer and float
