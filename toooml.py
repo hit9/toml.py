@@ -13,21 +13,20 @@ from datetime import datetime
 from re import UNICODE
 
 # escape string
-"""
-\b     - backspace       (U+0008)
-\t     - tab             (U+0009)
-\n     - linefeed        (U+000A)
-\f     - form feed       (U+000C)
-\r     - carriage return (U+000D)
-\"     - quote           (U+0022)
-\/     - slash           (U+002F)
-\\     - backslash       (U+005C)
-\uXXXX - unicode         (U+XXXX)
-"""
-
+# \b     - backspace       (U+0008)
+# \t     - tab             (U+0009)
+# \n     - linefeed        (U+000A)
+# \f     - form feed       (U+000C)
+# \r     - carriage return (U+000D)
+# \"     - quote           (U+0022)
+# \/     - slash           (U+002F)
+# \\     - backslash       (U+005C)
+# \uXXXX - unicode         (U+XXXX)
+# But i dont think toml should escape this char: /
 # see mojombo/toml/issue#173. I dont want to escape forward slashes
 ES = r"(\\([btnfr\"\\u]|[0-7]{1,3}|x[a-fA-F0-9]+))"
 
+# string's literal
 STR = r'\"([^"\\\n]|' + ES + ')*\"'
 
 
@@ -148,6 +147,7 @@ def p_assignment(p):
     dct[p[1]] = p[3]
 
 
+# values can be array, int, datetime, float, string integer, boolen
 def p_value(p):
     """value : array
              | DATETIME
