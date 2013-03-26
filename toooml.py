@@ -108,14 +108,18 @@ def t_STRING(t):
     return t
 
 
+# Feeling negative? Do what's natural.
+# toml means, don't use this: +1.79, use 1.79 instead
 def t_FLOAT(t):
-    r'((\d+)(\.\d+)(e(\+|-)?(\d+))? | (\d+)e(\+|-)?(\d+))([lL]|[fF])?'
+    r'([-](\d+)(\.\d+)(e(\+|-)?(\d+))? | (\d+)e(\+|-)?(\d+))([lL]|[fF])?'
     t.value = float(t.value)
     return t
 
 
+# dont use +4,  use 4 instead.
+# negative integer is ok: -4
 def t_INTEGER(t):
-    r'\d+([uU]|[lL]|[uU][lL]|[lL][uU])?'
+    r'[-]?\d+([uU]|[lL]|[uU][lL]|[lL][uU])?'
     t.value = int(t.value)
     return t
 
@@ -214,7 +218,14 @@ def loads(s):
     dct = dict()
     keygroup = tuple()
     if s:
-        return parser.parse(s)
+        lex.input(s)
+
+        # Tokenize
+        while True:
+            tok = lex.token()
+            if not tok: break      # No more input
+            print tok
+        # return parser.parse(s)
     # return {} if s is empty
     return {}
 
