@@ -1,4 +1,4 @@
-toooml
+toml.py
 ------
 
 Python parser for [mojombo/toml](https://github.com/mojombo/toml).
@@ -14,13 +14,13 @@ Version [V0.1](https://github.com/mojombo/toml/blob/master/versions/toml-v0.1.0.
 Install
 -------
 
-    pip install git+git://github.com/hit9/toooml.git
+    pip install git+git://github.com/hit9/toml.py.git
 
 Use
 ----
 
 ```python
->>> import toooml as toml
+>>> import toml
 >>> toml.loads("""
 ... [blog]
 ... [blog.author]
@@ -64,5 +64,3 @@ TODO
 1. error handle
 
 2. write tests
-
-3. fix negative nubmer in integer and float

@@ -108,14 +108,18 @@ def t_STRING(t):
     return t
 
 
+# Feeling negative? Do what's natural.
+# toml means, don't use this: +1.79, use 1.79 instead
 def t_FLOAT(t):
-    r'((\d+)(\.\d+)(e(\+|-)?(\d+))? | (\d+)e(\+|-)?(\d+))([lL]|[fF])?'
+    r'([-](\d+)(\.\d+)(e(\+|-)?(\d+))? | (\d+)e(\+|-)?(\d+))([lL]|[fF])?'
     t.value = float(t.value)
     return t
 
 
+# dont use +4,  use 4 instead.
+# negative integer is ok: -4
 def t_INTEGER(t):
-    r'\d+([uU]|[lL]|[uU][lL]|[lL][uU])?'
+    r'[-]?\d+([uU]|[lL]|[uU][lL]|[lL][uU])?'
     t.value = int(t.value)
     return t
 
@@ -192,14 +196,17 @@ def p_array(p):
 
 # terminating commas are ok before the closing bracket.
 def p_sequence(p):
-    """sequence : value
+    """sequence : sequence ',' value
                 | sequence ','
-                | sequence ',' value"""
+                | value
+                | """
 
     if len(p) == 1:
         p[0] = []
-    elif len(p) == 2 or len(p) == 3:
+    elif len(p) == 2:
         p[0] = [p[1]]
+    elif len(p) == 3:
+        p[0] = p[1]
     elif len(p) == 4:
         p[0] = p[1] + [p[3]]
 

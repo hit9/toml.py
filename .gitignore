@@ -7,3 +7,4 @@ parser.out
 build/
 dist/
 toooml.egg-info/
+*.egg-info/

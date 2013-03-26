@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(
-    name="toooml",
+    name="toml_py",
     version="0.1",
     author="hit9",
     author_email="nz2324@126.com",
@@ -15,6 +15,6 @@ setup(
     license="MIT",
     keywords="toml, parser",
     url="https://github.com/hit9/toooml",
-    py_modules=["toooml"],
+    py_modules=["toml"],
     install_requires=["ply"]
 )
