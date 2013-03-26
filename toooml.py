@@ -7,6 +7,8 @@
 # License: MIT
 #
 
+__version__ = '0.1'
+
 from ply import lex
 from ply import yacc
 from ply.lex import TOKEN
@@ -147,20 +149,21 @@ def p_translation_unit(p):
 
 
 # lookup all keys
-def p_assignment_1(p):
+def p_assignment_keys(p):
     """assignment : KEY EQUALS value"""
     # TODO: if key already in dct, raise error
     # reference global dct with d
     d = dct
     # if keys are in some keygroup
     for k in keygroup:
-        d[k] = dict()
+        # @marksteve 's way is right!
+        d.setdefault(k, {})
         d = d[k]
     d[p[1]] = p[3]
 
 
 # looup all keygroups
-def p_assignment_2(p):
+def p_assignment_keygroup(p):
     """assignment : KEYGROUP
                   | assignment KEYGROUP"""
     global keygroup
@@ -209,4 +212,7 @@ def loads(s):
     # reset return dict
     dct = dict()
     keygroup = tuple()
-    return parser.parse(s)
+    if s:
+        return parser.parse(s)
+    # return {} if s is empty
+    return {}

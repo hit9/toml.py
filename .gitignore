@@ -4,3 +4,6 @@
 venv/
 test.py
 parser.out
+build/
+dist/
+toooml.egg-info/
