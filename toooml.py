@@ -114,7 +114,7 @@ def t_INTEGER(t):
 
 def t_BOOLEN(t):
     r'true|false'
-    t.value = t.value == "true"
+    t.value = (t.value == "true")
     return t
 
 # build lexer
