@@ -1,4 +1,4 @@
-# coding=utf8
+#coding=utf8
 from ply import lex
 from ply import yacc
 from ply.lex import TOKEN
@@ -18,7 +18,7 @@ from re import UNICODE
 \uXXXX - unicode         (U+XXXX)
 """
 
-# see mojombo/toml/issue#173. I dont want tp escape forward slashes
+# see mojombo/toml/issue#173. I dont want to escape forward slashes
 ES = r"(\\([btnfr\"\\u]|[0-7]{1,3}|x[a-fA-F0-9]+))"
 
 STR = r'\"([^"\\\n]|'+ES+')*\"'
@@ -54,11 +54,11 @@ def t_newline(t):
     t.lexer.lineno += len(t.value)
 
 
-#TODO: to specific the collum in error position
 def t_error(t):
     raise TomlSyntaxError(
         u"Illegal character '{0}' at line {1}".format(
-            t.value[0], t.lexer.lineno)
+            t.value[0], t.lexer.lineno
+        )
     )
 
 
@@ -109,12 +109,50 @@ def t_BOOLEN(t):
 # build lexer
 lex.lex(reflags=UNICODE)
 
-# tests
-text = open("test.toml").read().decode("utf8")
-lex.input(text)
-while 1:
-    tok = lex.token()
-    if not tok:
-        break
-    print tok
-    print tok.value
+#return dict
+dct = None
+
+
+def p_error(p):
+    raise TomlSyntaxError(
+        "SyntaxError at '%r'" % (p, )
+    )
+
+# start rule, store dct
+def p_start(p):
+    "start : translation_unit"
+    p[0] = dct
+
+
+# unit to lookup all assignments
+def p_translation_unit(p):
+    """
+    translation_unit : assignment
+                     | translation_unit assignment
+    """
+    pass
+
+
+def p_assignment(p):
+    """assignment : KEY EQUALS value"""
+    dct[p[1]] = p[3]
+
+
+def p_value(p):
+    """value : DATETIME
+             | STRING
+             | FLOAT
+             | INTEGER
+             | BOOLEN"""
+
+    p[0] = p[1]
+
+
+parser = yacc.yacc(debug=1, write_tables=0)
+
+
+def loads(s):
+    global dct
+    # reset return dict
+    dct = dict()
+    return parser.parse(s)

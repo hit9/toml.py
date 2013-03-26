@@ -1,0 +1,158 @@
+Created by PLY version 3.4 (http://www.dabeaz.com/ply)
+
+Unused terminals:
+
+    KEYGROUP
+
+Grammar
+
+Rule 0     S' -> start
+Rule 1     start -> translation_unit
+Rule 2     translation_unit -> assignment
+Rule 3     translation_unit -> translation_unit assignment
+Rule 4     assignment -> KEY EQUALS value
+Rule 5     value -> DATETIME
+Rule 6     value -> STRING
+Rule 7     value -> FLOAT
+Rule 8     value -> INTEGER
+Rule 9     value -> BOOLEN
+
+Terminals, with rules where they appear
+
+BOOLEN               : 9
+DATETIME             : 5
+EQUALS               : 4
+FLOAT                : 7
+INTEGER              : 8
+KEY                  : 4
+KEYGROUP             : 
+STRING               : 6
+error                : 
+
+Nonterminals, with rules where they appear
+
+assignment           : 2 3
+start                : 0
+translation_unit     : 1 3
+value                : 4
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . start
+    (1) start -> . translation_unit
+    (2) translation_unit -> . assignment
+    (3) translation_unit -> . translation_unit assignment
+    (4) assignment -> . KEY EQUALS value
+
+    KEY             shift and go to state 3
+
+    start                          shift and go to state 2
+    translation_unit               shift and go to state 4
+    assignment                     shift and go to state 1
+
+state 1
+
+    (2) translation_unit -> assignment .
+
+    KEY             reduce using rule 2 (translation_unit -> assignment .)
+    $end            reduce using rule 2 (translation_unit -> assignment .)
+
+
+state 2
+
+    (0) S' -> start .
+
+
+
+state 3
+
+    (4) assignment -> KEY . EQUALS value
+
+    EQUALS          shift and go to state 5
+
+
+state 4
+
+    (1) start -> translation_unit .
+    (3) translation_unit -> translation_unit . assignment
+    (4) assignment -> . KEY EQUALS value
+
+    $end            reduce using rule 1 (start -> translation_unit .)
+    KEY             shift and go to state 3
+
+    assignment                     shift and go to state 6
+
+state 5
+
+    (4) assignment -> KEY EQUALS . value
+    (5) value -> . DATETIME
+    (6) value -> . STRING
+    (7) value -> . FLOAT
+    (8) value -> . INTEGER
+    (9) value -> . BOOLEN
+
+    DATETIME        shift and go to state 10
+    STRING          shift and go to state 7
+    FLOAT           shift and go to state 8
+    INTEGER         shift and go to state 12
+    BOOLEN          shift and go to state 11
+
+    value                          shift and go to state 9
+
+state 6
+
+    (3) translation_unit -> translation_unit assignment .
+
+    KEY             reduce using rule 3 (translation_unit -> translation_unit assignment .)
+    $end            reduce using rule 3 (translation_unit -> translation_unit assignment .)
+
+
+state 7
+
+    (6) value -> STRING .
+
+    KEY             reduce using rule 6 (value -> STRING .)
+    $end            reduce using rule 6 (value -> STRING .)
+
+
+state 8
+
+    (7) value -> FLOAT .
+
+    KEY             reduce using rule 7 (value -> FLOAT .)
+    $end            reduce using rule 7 (value -> FLOAT .)
+
+
+state 9
+
+    (4) assignment -> KEY EQUALS value .
+
+    KEY             reduce using rule 4 (assignment -> KEY EQUALS value .)
+    $end            reduce using rule 4 (assignment -> KEY EQUALS value .)
+
+
+state 10
+
+    (5) value -> DATETIME .
+
+    KEY             reduce using rule 5 (value -> DATETIME .)
+    $end            reduce using rule 5 (value -> DATETIME .)
+
+
+state 11
+
+    (9) value -> BOOLEN .
+
+    KEY             reduce using rule 9 (value -> BOOLEN .)
+    $end            reduce using rule 9 (value -> BOOLEN .)
+
+
+state 12
+
+    (8) value -> INTEGER .
+
+    KEY             reduce using rule 8 (value -> INTEGER .)
+    $end            reduce using rule 8 (value -> INTEGER .)
+
