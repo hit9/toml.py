@@ -118,9 +118,6 @@ def p_error(p):
         "SyntaxError at '%r'" % (p, )
     )
 
-
-
-
 # start rule, store dct
 def p_start(p):
     "start : translation_unit"
@@ -147,31 +144,26 @@ def p_value(p):
              | STRING
              | FLOAT
              | INTEGER
-             | BOOLEN"""
+             | BOOLEN
+    """
 
     p[0] = p[1]
 
 
-# Arrays are square brackets with other primitives inside.
-# Whitespace is ignored. Elements are separated by commas.
-# Data types may not be mixed.
 def p_array(p):
     """array : '[' sequence ']'"""
     p[0] = p[2]
 
 
-# terminating commas are ok before the closing bracket.
 def p_sequence(p):
-    """sequence : value
-                | sequence ','
-                | sequence ',' value"""
-
-    if len(p) == 1:
-        p[0] = []
-    elif len(p) == 2 or len(p) == 3:
-        p[0] = [p[1]]
-    elif len(p) == 4:
-        p[0] = p[1] + [p[3]]
+    """sequence : value ',' sequence
+                | value ','
+                | value
+                |
+    """
+    q = p[1:]
+    print p
+    p[0] = filter(lambda x: x != ',', q)
 
 
 parser = yacc.yacc(debug=1, write_tables=0)
