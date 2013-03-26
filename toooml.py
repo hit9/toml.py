@@ -27,7 +27,8 @@ STR = r'\"([^"\\\n]|'+ES+')*\"'
 class TomlSyntaxError(SyntaxError):
     pass
 
-ISO8601 = '%Y-%m-%dT%H:%M:%SZ'
+
+ISO8601 = "%Y-%m-%dT%H:%M:%SZ"
 
 tokens = (
     "KEY",
@@ -46,6 +47,7 @@ literals = ["[", "]", ","]
 t_ignore = "\x20\x09"
 
 # comments
+# key = "value" # Yeah, you can do this.
 t_ignore_COMMENT = r'\#.*'
 
 
@@ -174,7 +176,7 @@ def p_sequence(p):
         p[0] = p[1] + [p[3]]
 
 
-parser = yacc.yacc(debug=1, write_tables=0)
+parser = yacc.yacc(debug=0, write_tables=0)
 
 
 def loads(s):
