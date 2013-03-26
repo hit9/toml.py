@@ -2,13 +2,15 @@
 #
 # Python parser for toml (Tom's Obvious, Minimal Language)
 # Home: https://github.com/mojombo/toml
-# Note: This is an improved version of toml-ply(https://github.com/marksteve/toml-ply)
+# Note: This is an improved version of \
+# toml-ply(https://github.com/marksteve/toml-ply)
 # License: MIT
 #
 
 from ply import lex
 from ply import yacc
 from ply.lex import TOKEN
+from ply.yacc import YaccProduction
 from datetime import datetime
 from re import UNICODE
 
@@ -64,9 +66,7 @@ def t_newline(t):
 
 def t_error(t):
     raise TomlSyntaxError(
-        u"Illegal character '{0}' at line {1}".format(
-            t.value[0], t.lexer.lineno
-        )
+        "Illegal character at %r" % (t, )
     )
 
 
@@ -78,6 +78,8 @@ def t_KEY(t):
     return t
 
 
+# keygroups can be nested. so use tuple to store this.
+# e.g. [a.b.c] => ('a', 'b', 'c')
 def t_KEYGROUP(t):
     r'\[([a-zA-Z_][a-zA-Z0-9_]*\.?)+\]'
     t.value = tuple(t.value[1:-1].split('.'))
@@ -93,6 +95,7 @@ def t_DATETIME(t):
 
 @TOKEN(STR)
 def t_STRING(t):
+    # remove fisrt double quote and last double quote as value
     t.value = t.value[1:-1]
     return t
 
@@ -122,10 +125,11 @@ dct = None
 
 
 def p_error(p):
+    if  "error_msg" not in p.__dict__:
+        p.error_msg = ""
     raise TomlSyntaxError(
-        "SyntaxError at '%r'" % (p, )
+        p.error_msg + " at %r" % (p, )
     )
-
 
 # start rule, store dct
 def p_start(p):
@@ -142,10 +146,18 @@ def p_translation_unit(p):
     pass
 
 
-def p_assignment(p):
+# lookup all keys
+def p_assignment_1(p):
     """assignment : KEY EQUALS value"""
+    # TODO: if key already in dct, raise error
     dct[p[1]] = p[3]
 
+
+# looup all keygroups
+def p_assignment_2(p):
+    """assignment : KEYGROUP
+                  | assignment KEYGROUP"""
+    # TODO:keygroups
 
 # values can be array, int, datetime, float, string integer, boolen
 def p_value(p):
