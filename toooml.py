@@ -218,14 +218,7 @@ def loads(s):
     dct = dict()
     keygroup = tuple()
     if s:
-        lex.input(s)
-
-        # Tokenize
-        while True:
-            tok = lex.token()
-            if not tok: break      # No more input
-            print tok
-        # return parser.parse(s)
+        return parser.parse(s)
     # return {} if s is empty
     return {}
 
