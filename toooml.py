@@ -196,14 +196,17 @@ def p_array(p):
 
 # terminating commas are ok before the closing bracket.
 def p_sequence(p):
-    """sequence : value
+    """sequence : sequence ',' value
                 | sequence ','
-                | sequence ',' value"""
+                | value
+                | """
 
     if len(p) == 1:
         p[0] = []
-    elif len(p) == 2 or len(p) == 3:
+    elif len(p) == 2:
         p[0] = [p[1]]
+    elif len(p) == 3:
+        p[0] = p[1]
     elif len(p) == 4:
         p[0] = p[1] + [p[3]]
 
