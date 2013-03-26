@@ -20,7 +20,7 @@ Use
 ----
 
 ```python
->>> import toml_py as toml
+>>> import toml
 >>> toml.loads("""
 ... [blog]
 ... [blog.author]
