@@ -41,6 +41,7 @@ class TomlSyntaxError(SyntaxError):
 ISO8601 = "%Y-%m-%dT%H:%M:%SZ"
 
 tokens = (
+    "BOOLEN",
     "KEY",
     "KEYGROUP",
     "EQUALS",
@@ -48,7 +49,6 @@ tokens = (
     "STRING",
     "FLOAT",
     "INTEGER",
-    "BOOLEN"
 )
 
 literals = ["[", "]", ","]
@@ -73,6 +73,12 @@ def t_error(t):
 
 
 t_EQUALS = r"="
+
+
+def t_BOOLEN(t):
+    r'true|false'
+    t.value = (t.value == "true")
+    return t
 
 
 def t_KEY(t):
@@ -113,11 +119,6 @@ def t_INTEGER(t):
     t.value = int(t.value)
     return t
 
-
-def t_BOOLEN(t):
-    r'true|false'
-    t.value = (t.value == "true")
-    return t
 
 # build lexer
 lex.lex(reflags=UNICODE)
@@ -172,11 +173,11 @@ def p_assignment_keygroup(p):
 # values can be array, int, datetime, float, string integer, boolen
 def p_value(p):
     """value : array
+             | BOOLEN
              | DATETIME
              | STRING
              | FLOAT
-             | INTEGER
-             | BOOLEN"""
+             | INTEGER"""
 
     p[0] = p[1]
 

@@ -21,8 +21,9 @@ Use
 ... name = "Tom"
 ... age = 14
 ... score = 9.99
+... is_child = true
 ... """)
-{'blog': {'author': {'age': 14, 'score': 9.99, 'name': 'Tom'}}}
+{'blog': {'author': {'age': 14, 'score': 9.99, 'name': 'Tom', 'is_child': True}}}
 ```
 
 Unicode string are also supported:
