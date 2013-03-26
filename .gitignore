@@ -3,3 +3,4 @@
 *.pyc
 venv/
 test.py
+parser.out
