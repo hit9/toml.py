@@ -111,7 +111,7 @@ def t_STRING(t):
 # Feeling negative? Do what's natural.
 # toml means, don't use this: +1.79, use 1.79 instead
 def t_FLOAT(t):
-    r'([-](\d+)(\.\d+)(e(\+|-)?(\d+))? | (\d+)e(\+|-)?(\d+))([lL]|[fF])?'
+    r'([-]?(\d+)(\.\d+)(e(\+|-)?(\d+))? | (\d+)e(\+|-)?(\d+))([lL]|[fF])?'
     t.value = float(t.value)
     return t
 
