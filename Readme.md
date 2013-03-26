@@ -51,9 +51,9 @@ Empty input:
 from command line:
 
 ```
-$ cat some.toml | python -m toooml
+$ cat some.toml | python -m toml
 {'name': 'Tom'}
-$ echo "n = 1.3" | python -m toooml
+$ echo "n = 1.3" | python -m toml
 {'n': 1.3}
 
 ```
@@ -64,3 +64,5 @@ TODO
 1. error handle
 
 2. write tests
+
+3. specific about array(comma),+9 balabala
