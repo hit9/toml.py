@@ -125,10 +125,8 @@ dct = None
 
 
 def p_error(p):
-    if  "error_msg" not in p.__dict__:
-        p.error_msg = ""
     raise TomlSyntaxError(
-        p.error_msg + " at %r" % (p, )
+        "SyntaxError at %r" % (p, )
     )
 
 # start rule, store dct
