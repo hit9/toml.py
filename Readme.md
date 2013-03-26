@@ -61,14 +61,13 @@ $ echo "n = 1.3" | python -m toml
 Sepcific Notes
 --------------
 
-**Each piece of notes bellow come from [mojombo/toml](https://github.com/mojombo/toml)**,just implemented in toml.py
+**Each piece of notes bellow comes from [mojombo/toml](https://github.com/mojombo/toml)**, just implemented in toml.py
 
 1. Negative integer and float is ok: `-1 -0.9`, but positive integer or float in this format is not allowed: `+9` `+8.8`
 
 2. Booleans are always lowercase.
 
 3. Arrays also ignore newlines between the brackets:
-
 ```python
 >>> import toml
 >>> toml.loads("""
@@ -80,7 +79,6 @@ Sepcific Notes
 ... """)
 {'arr': [2, 3, 4]}
 ```
-
 As you see, terminating commas are ok before the closing bracket.
 
 4. Arrays can be nested
