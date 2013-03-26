@@ -17,9 +17,12 @@ from re import UNICODE
 \\     - backslash       (U+005C)
 \uXXXX - unicode         (U+XXXX)
 """
-ES = r"(\\([btnfr\"/\\u]|[0-7]{1,3}|x[a-fA-F0-9]+))"
+
+# see mojombo/toml/issue#173. I dont want tp escape forward slashes
+ES = r"(\\([btnfr\"\\u]|[0-7]{1,3}|x[a-fA-F0-9]+))"
 
 STR = r'\"([^"\\\n]|'+ES+')*\"'
+
 
 class TomlSyntaxError(SyntaxError):
     pass
@@ -41,14 +44,15 @@ literals = ["[", "]", ","]
 
 # ignore space(x20) and tab(x09)
 t_ignore = "\x20\x09"
-# comments
 
+# comments
 t_ignore_COMMENT = r'\#.*'
 
 
 def t_newline(t):
     r'\n+'
     t.lexer.lineno += len(t.value)
+
 
 #TODO: to specific the collum in error position
 def t_error(t):
@@ -58,10 +62,7 @@ def t_error(t):
     )
 
 
-# regexp tokens
 t_EQUALS = r"="
-
-# function tokens
 
 
 def t_KEY(t):
@@ -75,15 +76,18 @@ def t_KEYGROUP(t):
     return t
 
 
+# ISO 8601 dates: 1979-05-27T07:32:00Z
 def t_DATETIME(t):
     r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z'
     t.value = datetime.strptime(t.value, ISO8601)
     return t
 
+
 @TOKEN(STR)
 def t_STRING(t):
     t.value = t.value[1:-1]
     return t
+
 
 def t_FLOAT(t):
     r'((\d+)(\.\d+)(e(\+|-)?(\d+))? | (\d+)e(\+|-)?(\d+))([lL]|[fF])?'
