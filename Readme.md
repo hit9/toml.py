@@ -10,6 +10,12 @@ Support
 
 Version [V0.1](https://github.com/mojombo/toml/blob/master/versions/toml-v0.1.0.md) of toml.
 
+
+Install
+-------
+
+    pip install git+git://github.com/hit9/toooml.git
+
 Use
 ----
 
@@ -58,3 +64,5 @@ TODO
 1. error handle
 
 2. write tests
+
+3. fix negative nubmer in integer and float
