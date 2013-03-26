@@ -10,6 +10,12 @@ Support
 
 Version [V0.1](https://github.com/mojombo/toml/blob/master/versions/toml-v0.1.0.md) of toml.
 
+
+Install
+-------
+
+    pip install git+git://github.com/hit9/toooml.git
+
 Use
 ----
 
@@ -21,8 +27,9 @@ Use
 ... name = "Tom"
 ... age = 14
 ... score = 9.99
+... is_child = true
 ... """)
-{'blog': {'author': {'age': 14, 'score': 9.99, 'name': 'Tom'}}}
+{'blog': {'author': {'age': 14, 'score': 9.99, 'name': 'Tom', 'is_child': True}}}
 ```
 
 Unicode string are also supported:
@@ -41,9 +48,21 @@ Empty input:
 {}
 ```
 
+from command line:
+
+```
+$ cat some.toml | python -m toooml
+{'name': 'Tom'}
+$ echo "n = 1.3" | python -m toooml
+{'n': 1.3}
+
+```
+
 TODO
 ----
 
 1. error handle
 
 2. write tests
+
+3. fix negative nubmer in integer and float
