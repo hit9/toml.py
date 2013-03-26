@@ -122,6 +122,8 @@ lex.lex(reflags=UNICODE)
 
 # return dict
 dct = None
+# temp global var to record keygroup
+keygroup = None
 
 
 def p_error(p):
@@ -148,14 +150,21 @@ def p_translation_unit(p):
 def p_assignment_1(p):
     """assignment : KEY EQUALS value"""
     # TODO: if key already in dct, raise error
-    dct[p[1]] = p[3]
+    # reference global dct with d
+    d = dct
+    # if keys are in some keygroup
+    for k in keygroup:
+        d[k] = dict()
+        d = d[k]
+    d[p[1]] = p[3]
 
 
 # looup all keygroups
 def p_assignment_2(p):
     """assignment : KEYGROUP
                   | assignment KEYGROUP"""
-    # TODO:keygroups
+    global keygroup
+    keygroup = p[len(p)-1]
 
 # values can be array, int, datetime, float, string integer, boolen
 def p_value(p):
@@ -196,6 +205,8 @@ parser = yacc.yacc(debug=0, write_tables=0)
 
 def loads(s):
     global dct
+    global keygroup
     # reset return dict
     dct = dict()
+    keygroup = tuple()
     return parser.parse(s)
