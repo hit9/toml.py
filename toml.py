@@ -151,6 +151,7 @@ def p_translation_unit(p):
     """
     translation_unit : assignment
                      | translation_unit assignment
+                     |
     """
     pass
 
@@ -222,9 +223,6 @@ def loads(s):
     # reset return dict
     dct = dict()
     keygroup = tuple()
-    if s.isspace():
-        # return {} if s is empty
-        return {}
     return parser.parse(s)
 
 if __name__ == '__main__':

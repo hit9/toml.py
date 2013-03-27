@@ -48,6 +48,13 @@ Empty input:(only spaces, tabs or newlines)
 {}
 ```
 
+input only `#` comments:
+
+```python
+>>> toml.loads("# only comments!")
+{}
+```
+
 from command line:
 
 ```
