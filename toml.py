@@ -12,7 +12,6 @@ __version__ = '0.1'
 from ply import lex
 from ply import yacc
 from ply.lex import TOKEN
-from ply.yacc import YaccProduction
 from datetime import datetime
 from re import UNICODE
 
@@ -28,7 +27,7 @@ from re import UNICODE
 # \uXXXX - unicode         (U+XXXX)
 # But i dont think toml should escape this char: /
 # see mojombo/toml/issue#173. I dont want to escape forward slashes
-ES = r"(\\([btnfr\"\\u]|[0-7]{1,3}|x[a-fA-F0-9]+))"
+ES = r'(\\(["\\bfnrtu]|[0-7]{1,3}|x[a-fA-F0-9]+))'
 
 # string's literal
 STR = r'\"([^"\\\n]|' + ES + ')*\"'
@@ -134,9 +133,12 @@ keygroup = None
 
 
 def p_error(p):
-    raise TomlSyntaxError(
-        "SyntaxError at %r" % (p, )
-    )
+    if p:
+        raise TomlSyntaxError(
+            "SyntaxError at %r" % (p, )
+        )
+    else:
+        raise TomlSyntaxError("SyntaxError at EOF")
 
 # start rule, store dct
 def p_start(p):
@@ -220,10 +222,10 @@ def loads(s):
     # reset return dict
     dct = dict()
     keygroup = tuple()
-    if s:
-        return parser.parse(s)
-    # return {} if s is empty
-    return {}
+    if s.isspace():
+        # return {} if s is empty
+        return {}
+    return parser.parse(s)
 
 if __name__ == '__main__':
     exit(loads(raw_input()))
