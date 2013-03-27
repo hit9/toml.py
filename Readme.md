@@ -14,7 +14,7 @@ Version [V0.1](https://github.com/mojombo/toml/blob/master/versions/toml-v0.1.0.
 Install
 -------
 
-    pip install git+git://github.com/hit9/toml.py.git
+    pip install git+git://github.com/hit9/toml.py.git@v0.1
 
 Use
 ----
@@ -63,8 +63,7 @@ Sepcific Notes
 
 **Each piece of notes bellow comes from [mojombo/toml](https://github.com/mojombo/toml)**, just implemented in toml.py
 
-1. Negative integer and float is ok: `-1 -0.9`, but positive integer or float in this format is not allowed: `+9` `+8.8`
-
+1. Negative integer and float is ok: `-1` `-0.9`, but positive integer or float in this format is not allowed: `+9` `+8.8`
 2. Booleans are always lowercase.
 
 3. Arrays also ignore newlines between the brackets:
@@ -105,6 +104,6 @@ TODO
 
 2. write tests
 
-3. doc for specific about array(comma),+9 balabala
+3. doc for specific about escaping string
 
 4. to fix:Data types may not be mixed.
