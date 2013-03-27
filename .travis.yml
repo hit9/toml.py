@@ -1,0 +1,15 @@
+language: python
+
+python:
+  - 2.5
+  - 2.6
+  - 2.7
+
+before_install: 
+  - pip install ply
+
+branches:
+  only:
+    - dev
+
+script: nosetests -v -x --process-timeout=10 -w tests --nocapture
