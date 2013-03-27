@@ -82,14 +82,21 @@ Sepcific Notes
 As you see, terminating commas are ok before the closing bracket.
 
 4. Arrays can be nested
-
 ```python
 >>> toml.loads("""
 ... arr = [[1,2,[3,4],5]]
 ... """)
 {'arr': [[1, 2, [3, 4], 5]]}
-
 ```
+5. You don't need to specify all the superkeys if you don't want to. TOML knows how to do it for you.
+```python
+>>> toml.loads("""
+... [x.y.z]
+... a = "somestr"
+... """)
+{'x': {'y': {'z': {'a': 'somestr'}}}}
+```
+
 
 TODO
 ----

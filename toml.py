@@ -133,9 +133,12 @@ keygroup = None
 
 
 def p_error(p):
-    raise TomlSyntaxError(
-        "SyntaxError at %r" % (p, )
-    )
+    if p:
+        raise TomlSyntaxError(
+            "SyntaxError at %r" % (p, )
+        )
+    else:
+        print("Syntax error at EOF")
 
 # start rule, store dct
 def p_start(p):
