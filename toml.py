@@ -138,7 +138,7 @@ def p_error(p):
             "SyntaxError at %r" % (p, )
         )
     else:
-        print("Syntax error at EOF")
+        raise TomlSyntaxError("SyntaxError at EOF")
 
 # start rule, store dct
 def p_start(p):
@@ -222,10 +222,10 @@ def loads(s):
     # reset return dict
     dct = dict()
     keygroup = tuple()
-    if s:
-        return parser.parse(s)
-    # return {} if s is empty
-    return {}
+    if s.isspace():
+        # return {} if s is empty
+        return {}
+    return parser.parse(s)
 
 if __name__ == '__main__':
     exit(loads(raw_input()))
