@@ -39,3 +39,8 @@ def test_comment(dct):
 @t
 def test_key_value(dct):
     assert dct == {"name": "Tom", "age": 10}
+
+
+@t
+def test_ignore_tab_space(dct):
+    assert dct == {"name": "Mark", "email": "Mark@github.com", "score": 9.8}
