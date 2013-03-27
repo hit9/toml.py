@@ -27,7 +27,7 @@ from re import UNICODE
 # \uXXXX - unicode         (U+XXXX)
 # But i dont think toml should escape this char: /
 # see mojombo/toml/issue#173. I dont want to escape forward slashes
-ES = r"(\\([btnfr\"\\u]|[0-7]{1,3}|x[a-fA-F0-9]+))"
+ES = r'(\\(["\\bfnrtu]|[0-7]{1,3}|x[a-fA-F0-9]+))'
 
 # string's literal
 STR = r'\"([^"\\\n]|' + ES + ')*\"'

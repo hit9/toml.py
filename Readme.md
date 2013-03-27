@@ -41,10 +41,10 @@ Unicode string are also supported:
 {u'name': u'\u6c64\u59c6'}
 ```
 
-Empty input:
+Empty input:(only spaces, tabs or newlines)
 
 ```python
->>> toml.loads("")
+>>> toml.loads(" ")
 {}
 ```
 
