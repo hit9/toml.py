@@ -12,7 +12,6 @@ __version__ = '0.1'
 from ply import lex
 from ply import yacc
 from ply.lex import TOKEN
-from ply.yacc import YaccProduction
 from datetime import datetime
 from re import UNICODE
 
