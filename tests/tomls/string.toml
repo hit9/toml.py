@@ -1,0 +1,8 @@
+a = "Yes,  I am a string"
+b = "\b"
+c = "\t"
+d = "\n"
+e = "\f"
+f = "\r"
+g = "\""
+h = "\\"

@@ -5,6 +5,8 @@ Python parser for [mojombo/toml](https://github.com/mojombo/toml).
 
 Improved version of [marksteve/toml-ply](https://github.com/marksteve/toml-ply)
 
+[![Build Status](https://travis-ci.org/hit9/toml.py.png?branch=dev)](https://travis-ci.org/hit9/toml.py)
+
 Support
 -------
 
@@ -103,6 +105,11 @@ As you see, terminating commas are ok before the closing bracket.
 {'x': {'y': {'z': {'a': 'somestr'}}}}
 ```
 
+
+Tests
+-----
+
+    $ nosetests -w tests
 
 TODO
 ----

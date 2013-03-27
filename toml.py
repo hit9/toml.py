@@ -27,10 +27,9 @@ from re import UNICODE
 # \uXXXX - unicode         (U+XXXX)
 # But i dont think toml should escape this char: /
 # see mojombo/toml/issue#173. I dont want to escape forward slashes
-ES = r'(\\(["\\bfnrtu]|[0-7]{1,3}|x[a-fA-F0-9]+))'
-
+ES =  r'(\\(["\\bfnrt]))'
 # string's literal
-STR = r'\"([^"\\\n]|' + ES + ')*\"'
+STR = r'"([^"\\n]|' + ES + ')*"'
 
 
 class TomlSyntaxError(SyntaxError):
@@ -58,17 +57,6 @@ t_ignore = "\x20\x09"
 # comments
 # key = "value" # Yeah, you can do this.
 t_ignore_COMMENT = r'\#.*'
-
-
-def t_newline(t):
-    r'\n+'
-    t.lexer.lineno += len(t.value)
-
-
-def t_error(t):
-    raise TomlSyntaxError(
-        "Illegal character at %r" % (t, )
-    )
 
 
 t_EQUALS = r"="
@@ -121,6 +109,17 @@ def t_INTEGER(t):
     r'[-]?\d+([uU]|[lL]|[uU][lL]|[lL][uU])?'
     t.value = int(t.value)
     return t
+
+
+def t_newline(t):
+    r'\n+'
+    t.lexer.lineno += len(t.value)
+
+
+def t_error(t):
+    raise TomlSyntaxError(
+        "Illegal character at %r" % (t, )
+    )
 
 
 # build lexer

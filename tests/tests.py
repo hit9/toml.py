@@ -43,4 +43,19 @@ def test_key_value(dct):
 
 @t
 def test_ignore_tab_space(dct):
-    assert dct == {"name": "Mark", "email": "Mark@github.com", "score": 9.8}
+    assert dct == {"name": "mark", "email": "mark@github.com", "score": 9.8}
+
+
+@t
+def test_string(dct):
+    print dct
+    assert dct == dict(
+        a="Yes,  I am a string",
+        b="\b",
+        c="\t",
+        d="\n",
+        e="\f",
+        f="\r",
+        g="\"",
+        h="\\"
+    )
