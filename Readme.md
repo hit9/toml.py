@@ -107,7 +107,7 @@ As you see, terminating commas are ok before the closing bracket.
 ... """)
 {'x': {'y': {'z': {'a': 'somestr'}}}}
 ```
-6. For flaot, there must be at least one number on each side of the decimal point.
+6. For float, there must be at least one number on each side of the decimal point.
 ```
 .5  # bad
 ```
@@ -157,8 +157,13 @@ Tests
 TODO
 ----
 
-1. error handle
+1. error handle (Any Good way? I dont know how to raise error in `p_` prefixed
+function!!)
 
-2. more tests
+2. more tests(Welcome for your tests suite)
 
-3. Unimplemented: Data types may not be mixed.
+3. Unimplemented: Data types may not be mixed. (Later..)
+
+4. Need to forbid this formart of integer? `04`
+
+5. which way is better? update already exist key or raise error instead.
