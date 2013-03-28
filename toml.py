@@ -12,8 +12,6 @@ __version__ = '0.1'
 from ply import lex
 from ply import yacc
 from datetime import datetime
-from re import UNICODE
-
 
 
 class TomlSyntaxError(SyntaxError):
@@ -85,7 +83,7 @@ def t_DATETIME(t):
 # But i dont think toml should escape this char: /
 # see mojombo/toml/issue#173. I dont want to escape forward slashes
 def t_STRING(t):
-    r'"(\\"|[^"])*"'
+    r'\"([^\\\n]|(\\.))*?\"'
     # remove fisrt double quote and last double quote as value
     s = t.value[1:-1]
     # handle escaping characters
@@ -107,9 +105,9 @@ def t_STRING(t):
             elif s[c] == "\\":
                 o += "\\"
             elif s[c] == "f":
-                s += "\f"
+                o += "\f"
             elif s[c] == "b":
-                s += "\b"
+                o += "\b"
             else:
                 raise TomlSyntaxError(
                     "Unexpected escape character: %s" % s[c]
@@ -149,7 +147,7 @@ def t_error(t):
 
 
 # build lexer
-lex.lex(reflags=UNICODE)
+lex.lex()
 
 # return dict
 dct = None
