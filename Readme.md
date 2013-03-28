@@ -16,7 +16,9 @@ Version [V0.1](https://github.com/mojombo/toml/blob/master/versions/toml-v0.1.0.
 Install
 -------
 
-    pip install git+git://github.com/hit9/toml.py.git@v0.1
+Codes on branch master are tested.
+
+    pip install git+git://github.com/hit9/toml.py.git@master
 
 Use
 ----
