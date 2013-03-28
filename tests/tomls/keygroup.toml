@@ -1,0 +1,8 @@
+[a]
+name = "Toml"
+email = "Toml@github.com"
+age = 78
+[b.c.d]
+e = -0.999
+[a.b]
+m = 13.9
