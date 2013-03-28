@@ -1,0 +1,3 @@
+# and this format is not allowed
+
+bad_float = +9.8  # use 9.8 is ok

@@ -11,32 +11,14 @@ __version__ = '0.1'
 
 from ply import lex
 from ply import yacc
-from ply.lex import TOKEN
 from datetime import datetime
-from re import UNICODE
-
-# escape string
-# \b     - backspace       (U+0008)
-# \t     - tab             (U+0009)
-# \n     - linefeed        (U+000A)
-# \f     - form feed       (U+000C)
-# \r     - carriage return (U+000D)
-# \"     - quote           (U+0022)
-# \/     - slash           (U+002F)
-# \\     - backslash       (U+005C)
-# \uXXXX - unicode         (U+XXXX)
-# But i dont think toml should escape this char: /
-# see mojombo/toml/issue#173. I dont want to escape forward slashes
-ES = r'(\\(["\\bfnrtu]|[0-7]{1,3}|x[a-fA-F0-9]+))'
-
-# string's literal
-STR = r'\"([^"\\\n]|' + ES + ')*\"'
 
 
 class TomlSyntaxError(SyntaxError):
     pass
 
 
+# year-month-day-T-hour-minute-timezone
 ISO8601 = "%Y-%m-%dT%H:%M:%SZ"
 
 tokens = (
@@ -58,17 +40,6 @@ t_ignore = "\x20\x09"
 # comments
 # key = "value" # Yeah, you can do this.
 t_ignore_COMMENT = r'\#.*'
-
-
-def t_newline(t):
-    r'\n+'
-    t.lexer.lineno += len(t.value)
-
-
-def t_error(t):
-    raise TomlSyntaxError(
-        "Illegal character at %r" % (t, )
-    )
 
 
 t_EQUALS = r"="
@@ -100,10 +71,52 @@ def t_DATETIME(t):
     return t
 
 
-@TOKEN(STR)
+# escape string
+# \b     - backspace       (U+0008)     [x]
+# \t     - tab             (U+0009)     [x]
+# \n     - linefeed        (U+000A)     [x]
+# \f     - form feed       (U+000C)     [x]
+# \r     - carriage return (U+000D)     [x]
+# \"     - quote           (U+0022)     [x]
+# \/     - slash           (U+002F)     [-]
+# \\     - backslash       (U+005C)     [x]
+# \uXXXX - unicode         (U+XXXX)     [-]
+# But i dont think toml should escape this char: /
+# see mojombo/toml/issue#173. I dont want to escape forward slashes
 def t_STRING(t):
+    r'\"([^\\\n]|(\\.))*?\"'
     # remove fisrt double quote and last double quote as value
-    t.value = t.value[1:-1]
+    s = t.value[1:-1]
+    # handle escaping characters
+    c = 0
+    l = len(s)
+    o = ""
+
+    while c < l:
+        if s[c] == "\\":
+            c += 1
+            if s[c] == "t":
+                o += "\t"
+            elif s[c] == "n":
+                o += "\n"
+            elif s[c] == '"':
+                o += "\""
+            elif s[c] == "r":
+                o += "\r"
+            elif s[c] == "\\":
+                o += "\\"
+            elif s[c] == "f":
+                o += "\f"
+            elif s[c] == "b":
+                o += "\b"
+            else:
+                raise TomlSyntaxError(
+                    "Unexpected escape character: %s" % s[c]
+                )
+        else:
+            o += s[c]
+        c += 1
+    t.value = o
     return t
 
 
@@ -117,14 +130,26 @@ def t_FLOAT(t):
 
 # dont use +4,  use 4 instead.
 # negative integer is ok: -4
+# TODO: to forbid this format: 04
 def t_INTEGER(t):
     r'[-]?\d+([uU]|[lL]|[uU][lL]|[lL][uU])?'
     t.value = int(t.value)
     return t
 
 
+def t_newline(t):
+    r'\n+'
+    t.lexer.lineno += len(t.value)
+
+
+def t_error(t):
+    raise TomlSyntaxError(
+        "Illegal character at %r" % (t, )
+    )
+
+
 # build lexer
-lex.lex(reflags=UNICODE)
+lex.lex()
 
 # return dict
 dct = None
@@ -140,6 +165,7 @@ def p_error(p):
     else:
         raise TomlSyntaxError("SyntaxError at EOF")
 
+
 # start rule, store dct
 def p_start(p):
     "start : translation_unit"
@@ -151,6 +177,7 @@ def p_translation_unit(p):
     """
     translation_unit : assignment
                      | translation_unit assignment
+                     |
     """
     pass
 
@@ -174,7 +201,8 @@ def p_assignment_keygroup(p):
     """assignment : KEYGROUP
                   | assignment KEYGROUP"""
     global keygroup
-    keygroup = p[len(p)-1]
+    keygroup = p[len(p) - 1]
+
 
 # values can be array, int, datetime, float, string integer, boolen
 def p_value(p):
@@ -222,9 +250,6 @@ def loads(s):
     # reset return dict
     dct = dict()
     keygroup = tuple()
-    if s.isspace():
-        # return {} if s is empty
-        return {}
     return parser.parse(s)
 
 if __name__ == '__main__':

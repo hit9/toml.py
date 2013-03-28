@@ -14,7 +14,7 @@ setup(
     ),
     license="MIT",
     keywords="toml, parser",
-    url="https://github.com/hit9/toooml",
+    url="https://github.com/hit9/toml.py",
     py_modules=["toml"],
     install_requires=["ply"]
 )

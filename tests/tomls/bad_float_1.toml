@@ -1,0 +1,7 @@
+# this is a good float
+
+a = 0.3
+
+# this is a bad float
+
+b = .5   # you should use 0.5 instead
