@@ -160,5 +160,13 @@ def test_keygroup(dct):
         }
     }
 
+
+@t
+def test_array(dct):
+    assert dct == {
+        "a": ["你", "是", "谁"],
+        "b": [1, 2, 3,]
+    }
+
 if __name__ == '__main__':
     exit("run nosetests")

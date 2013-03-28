@@ -1,0 +1,3 @@
+a = ["你", "是", "谁"]
+
+b = [1, 2, 3, ]  # it's ok to end with a comma
