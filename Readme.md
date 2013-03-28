@@ -112,9 +112,28 @@ As you see, terminating commas are ok before the closing bracket.
 .5  # bad
 ```
 7. Datetimes are ISO 8601 dates, only full zulu form is allowed.
-
-    >>> toml.loads("""date = 1979-05-27T07:32:00Z""")
-    {'date': datetime.datetime(1979, 5, 27, 7, 32)}
+```
+ >>> toml.loads("""date = 1979-05-27T07:32:00Z""")
+{'date': datetime.datetime(1979, 5, 27, 7, 32)}
+```
+8. String escaping, `toml.py` dosen't implement the forward slash and `\uXXXX`
+```
+\b     - backspace       (U+0008)     [x]
+\t     - tab             (U+0009)     [x]
+\n     - linefeed        (U+000A)     [x]
+\f     - form feed       (U+000C)     [x]
+\r     - carriage return (U+000D)     [x]
+\"     - quote           (U+0022)     [x]
+\/     - slash           (U+002F)     [-]
+\\     - backslash       (U+005C)     [x]
+\uXXXX - unicode         (U+XXXX)     [-]
+```
+```python
+>>> toml.loads(r"""  # attention to the r here, use raw or unicode or \\\\
+... path = "C:\\files\\MyPython\\"
+... """)
+{'path': 'C:\\files\\MyPython\\'}
+```
 
 
 Tests
