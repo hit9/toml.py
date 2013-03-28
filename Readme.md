@@ -73,6 +73,7 @@ Sepcific Notes
 **Each piece of notes bellow comes from [mojombo/toml](https://github.com/mojombo/toml)**, just implemented in toml.py
 
 1. Negative integer and float is ok: `-1` `-0.9`, but positive integer or float in this format is not allowed: `+9` `+8.8`
+
 2. Booleans are always lowercase.
 
 3. Arrays also ignore newlines between the brackets:
@@ -104,12 +105,15 @@ As you see, terminating commas are ok before the closing bracket.
 ... """)
 {'x': {'y': {'z': {'a': 'somestr'}}}}
 ```
-
 6. For flaot, there must be at least one number on each side of the decimal point.
-
 ```
 .5  # bad
 ```
+7. Datetimes are ISO 8601 dates, only full zulu form is allowed.
+
+    >>> toml.loads("""date = 1979-05-27T07:32:00Z""")
+    {'date': datetime.datetime(1979, 5, 27, 7, 32)}
+
 
 Tests
 -----
