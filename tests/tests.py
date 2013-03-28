@@ -48,7 +48,6 @@ def test_ignore_tab_space(dct):
 
 @t
 def test_string(dct):
-    print dct
     assert dct == dict(
         a="Yes,  I am a string",
         b="\b",
