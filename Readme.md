@@ -38,7 +38,7 @@ Unicode string are also supported:
 
 ```python
 >>> toml.loads(u"""
-... name = "\u6c64\u59c6"
+... name = "汤姆"
 ... """)
 {u'name': u'\u6c64\u59c6'}
 ```
@@ -105,6 +105,11 @@ As you see, terminating commas are ok before the closing bracket.
 {'x': {'y': {'z': {'a': 'somestr'}}}}
 ```
 
+6. For flaot, there must be at least one number on each side of the decimal point.
+
+```
+.5  # bad
+```
 
 Tests
 -----

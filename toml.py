@@ -129,6 +129,7 @@ def t_FLOAT(t):
 
 # dont use +4,  use 4 instead.
 # negative integer is ok: -4
+# TODO: to forbid this format: 04
 def t_INTEGER(t):
     r'[-]?\d+([uU]|[lL]|[uU][lL]|[lL][uU])?'
     t.value = int(t.value)
