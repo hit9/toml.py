@@ -135,6 +135,8 @@ As you see, terminating commas are ok before the closing bracket.
 {'path': 'C:\\files\\MyPython\\'}
 ```
 
+9. The spaces and tabs should be in english mode.(notes for chinese .etc users.)
+
 
 Tests
 -----
@@ -146,8 +148,6 @@ TODO
 
 1. error handle
 
-2. write tests
+2. more tests
 
-3. doc for specific about escaping string
-
-4. to fix:Data types may not be mixed.
+3. Unimplemented: Data types may not be mixed.
