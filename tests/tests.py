@@ -139,5 +139,34 @@ def test_datetime(dct):
         datetime=datetime(1979, 5, 27, 7, 32)
     )
 
+
+@t
+def test_keygroup(dct):
+    assert dct == {
+        "a": {
+            "name": "Toml",
+            "email": "Toml@github.com",
+            "age": 78,
+            "b":{
+                "m": 13.9
+            }
+        },
+        "b": {
+            "c":{
+                "d":{
+                    "e": -0.999
+                }
+            }
+        }
+    }
+
+
+@t
+def test_array(dct):
+    assert dct == {
+        "a": ["你", "是", "谁"],
+        "b": [1, 2, 3,]
+    }
+
 if __name__ == '__main__':
     exit("run nosetests")
