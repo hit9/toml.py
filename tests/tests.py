@@ -4,7 +4,7 @@
 
 import os
 import sys
-# i have to use wraps from functools to make nose works with custom decorators
+import yaml
 from nose.tools import raises
 from functools import wraps
 
@@ -147,13 +147,13 @@ def test_keygroup(dct):
             "name": "Toml",
             "email": "Toml@github.com",
             "age": 78,
-            "b":{
+            "b": {
                 "m": 13.9
             }
         },
         "b": {
-            "c":{
-                "d":{
+            "c": {
+                "d": {
                     "e": -0.999
                 }
             }
@@ -165,8 +165,21 @@ def test_keygroup(dct):
 def test_array(dct):
     assert dct == {
         "a": ["你", "是", "谁"],
-        "b": [1, 2, 3,]
+        "b": [1, 2, 3, ]
     }
 
-if __name__ == '__main__':
-    exit("run nosetests")
+
+
+########################################
+# official test suite
+########################################
+@t
+def test_hard_example(dct):
+    print "Official test suite: hard_example.toml"
+    assert dct == yaml.load(open("yaml/hard_example.yaml").read())
+
+
+@t
+def test_example(dct):
+    print "Official test suite: example.toml"
+    assert dct == yaml.load(open("yaml/example.yaml").read())
