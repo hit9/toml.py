@@ -52,14 +52,14 @@ def t_BOOLEN(t):
 
 
 def t_KEY(t):
-    r'[a-zA-Z_][a-zA-Z0-9_]*'
+    r'[a-zA-Z_][a-zA-Z0-9_#\?]*'
     return t
 
 
 # keygroups can be nested. so use tuple to store this.
 # e.g. [a.b.c] => ('a', 'b', 'c')
 def t_KEYGROUP(t):
-    r'\[([a-zA-Z_][a-zA-Z0-9_]*\.?)+\]'
+    r'\[([a-zA-Z_][a-zA-Z0-9_#\?]*\.?)+\]'
     t.value = tuple(t.value[1:-1].split('.'))
     return t
 
@@ -144,7 +144,7 @@ def t_newline(t):
 
 def t_error(t):
     raise TomlSyntaxError(
-        "Illegal character at %r" % (t, )
+        "Illegal character: '%s' at Line %d" % (t.value[0], t.lineno)
     )
 
 
@@ -160,7 +160,7 @@ keygroup = None
 def p_error(p):
     if p:
         raise TomlSyntaxError(
-            "SyntaxError at %r" % (p, )
+            "SyntaxError: character '%s' at line %d , token is: %r" % (p.value[0], p.lineno, p)
         )
     else:
         raise TomlSyntaxError("SyntaxError at EOF")
