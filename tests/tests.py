@@ -122,5 +122,22 @@ def test_chinese(dct):
     )
 
 
+@t
+def test_boolen(dct):
+    assert dct == {"do_u_love_me": False, "see": True}
+
+
+@t
+def test_empty(dct):
+    assert dct == {}
+
+
+@t
+def test_datetime(dct):
+    from datetime import datetime
+    assert dct == dict(
+        datetime=datetime(1979, 5, 27, 7, 32)
+    )
+
 if __name__ == '__main__':
     exit("run nosetests")

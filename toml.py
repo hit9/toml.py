@@ -18,6 +18,7 @@ class TomlSyntaxError(SyntaxError):
     pass
 
 
+# year-month-day-T-hour-minute-timezone
 ISO8601 = "%Y-%m-%dT%H:%M:%SZ"
 
 tokens = (
@@ -164,6 +165,7 @@ def p_error(p):
     else:
         raise TomlSyntaxError("SyntaxError at EOF")
 
+
 # start rule, store dct
 def p_start(p):
     "start : translation_unit"
@@ -199,7 +201,8 @@ def p_assignment_keygroup(p):
     """assignment : KEYGROUP
                   | assignment KEYGROUP"""
     global keygroup
-    keygroup = p[len(p)-1]
+    keygroup = p[len(p) - 1]
+
 
 # values can be array, int, datetime, float, string integer, boolen
 def p_value(p):
