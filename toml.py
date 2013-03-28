@@ -11,25 +11,9 @@ __version__ = '0.1'
 
 from ply import lex
 from ply import yacc
-from ply.lex import TOKEN
 from datetime import datetime
 from re import UNICODE
 
-# escape string
-# \b     - backspace       (U+0008)
-# \t     - tab             (U+0009)
-# \n     - linefeed        (U+000A)
-# \f     - form feed       (U+000C)
-# \r     - carriage return (U+000D)
-# \"     - quote           (U+0022)
-# \/     - slash           (U+002F)
-# \\     - backslash       (U+005C)
-# \uXXXX - unicode         (U+XXXX)
-# But i dont think toml should escape this char: /
-# see mojombo/toml/issue#173. I dont want to escape forward slashes
-ES =  r'(\\(["\\bfnrt]))'
-# string's literal
-STR = r'"([^"\\n]|' + ES + ')*"'
 
 
 class TomlSyntaxError(SyntaxError):
@@ -88,10 +72,52 @@ def t_DATETIME(t):
     return t
 
 
-@TOKEN(STR)
+# escape string
+# \b     - backspace       (U+0008)     [x]
+# \t     - tab             (U+0009)     [x]
+# \n     - linefeed        (U+000A)     [x]
+# \f     - form feed       (U+000C)     [x]
+# \r     - carriage return (U+000D)     [x]
+# \"     - quote           (U+0022)     [x]
+# \/     - slash           (U+002F)     [-]
+# \\     - backslash       (U+005C)     [x]
+# \uXXXX - unicode         (U+XXXX)     [-]
+# But i dont think toml should escape this char: /
+# see mojombo/toml/issue#173. I dont want to escape forward slashes
 def t_STRING(t):
+    r'"(\\"|[^"])*"'
     # remove fisrt double quote and last double quote as value
-    t.value = t.value[1:-1]
+    s = t.value[1:-1]
+    # handle escaping characters
+    c = 0
+    l = len(s)
+    o = ""
+
+    while c < l:
+        if s[c] == "\\":
+            c += 1
+            if s[c] == "t":
+                o += "\t"
+            elif s[c] == "n":
+                o += "\n"
+            elif s[c] == '"':
+                o += "\""
+            elif s[c] == "r":
+                o += "\r"
+            elif s[c] == "\\":
+                o += "\\"
+            elif s[c] == "f":
+                s += "\f"
+            elif s[c] == "b":
+                s += "\b"
+            else:
+                raise TomlSyntaxError(
+                    "Unexpected escape character: %s" % s[c]
+                )
+        else:
+            o += s[c]
+        c += 1
+    t.value = o
     return t
 
 
