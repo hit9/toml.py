@@ -137,6 +137,17 @@ As you see, terminating commas are ok before the closing bracket.
 
 9. The spaces and tabs should be in english mode.(notes for chinese .etc users.)
 
+10. keys can have char `?` and `#`
+
+```
+>>> toml.loads(' what? = "Yeah!" ')
+{'what?': 'Yeah!'}
+```
+
+```
+>>> toml.loads(' the# = false  ')
+{'the#': False}
+```
 
 Tests
 -----
