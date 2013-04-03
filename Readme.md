@@ -62,8 +62,6 @@ input only `#` comments:
 from command line:
 
 ```
-$ cat some.toml | python -m toml
-{'name': 'Tom'}
 $ echo "n = 1.3" | python -m toml
 {'n': 1.3}
 
