@@ -137,15 +137,22 @@ As you see, terminating commas are ok before the closing bracket.
 
 10. keys can have char `?` and `#`
 
-```
->>> toml.loads(' what? = "Yeah!" ')
-{'what?': 'Yeah!'}
-```
+  ```
+  >>> toml.loads(' what? = "Yeah!" ')
+  {'what?': 'Yeah!'}
+  ```
 
-```
->>> toml.loads(' the# = false  ')
-{'the#': False}
-```
+  ```
+  >>> toml.loads(' the# = false  ')
+  {'the#': False}
+  ```
+
+11. if your `keygroup` ends with no keys:
+
+  ```
+  >>> toml.loads("[NoKeysInThisGroup]")                              
+  {'NoKeysInThisGroup': {}}                                          
+  ```
 
 Tests
 -----
