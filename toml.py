@@ -186,22 +186,27 @@ def p_translation_unit(p):
 def p_assignment_keys(p):
     """assignment : KEY EQUALS value"""
     # TODO: if key already in dct, raise error
-    # reference global dct with d
+    # ref dct
     d = dct
-    # if keys are in some keygroup
-    for k in keygroup:
-        # @marksteve 's way is right!
-        d.setdefault(k, {})
-        d = d[k]
+    # slide to the current keygroup's dict
+    for key in keygroup:
+        d = d[key]
     d[p[1]] = p[3]
 
 
-# looup all keygroups
+# lookup all keygroups
 def p_assignment_keygroup(p):
     """assignment : KEYGROUP
                   | assignment KEYGROUP"""
     global keygroup
     keygroup = p[len(p) - 1]
+
+    # ref dct
+    d = dct
+
+    for key in keygroup:
+        # init the keygroup's value to empty dict
+        d = d.setdefault(key, {})
 
 
 # values can be array, int, datetime, float, string integer, boolen

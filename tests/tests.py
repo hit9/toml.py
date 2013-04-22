@@ -169,6 +169,19 @@ def test_array(dct):
     }
 
 
+@t
+def test_empty_keygroup(dct):
+    assert dct == {
+        "a": {
+            "b": {
+                "c": {}
+            }
+        },
+        "c": {
+            "d": {}
+        }
+    }
+
 
 ########################################
 # official test suite
