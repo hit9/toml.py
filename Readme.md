@@ -74,7 +74,7 @@ Sepcific Notes
 
 1. Negative integer and float is ok: `-1` `-0.9`, but positive integer or float in this format is not allowed: `+9` `+8.8`
 
-2. Booleans are always lowercase.
+2. Boolens are always lowercase.
 
 3. Arrays also ignore newlines between the brackets:
 ```python
@@ -165,10 +165,6 @@ TODO
 1. error handle (Any Good way? I dont know how to raise error in `p_` prefixed
 function!!)
 
-2. more tests(Welcome for your tests suite)
+2. Unimplemented: Data types may not be mixed. (Later..)
 
-3. Unimplemented: Data types may not be mixed. (Later..)
-
-4. Need to forbid this formart of integer? `04`
-
-5. which way is better? update already exist key or raise error instead.
+3. which way is better? update already exist key or raise error instead.
