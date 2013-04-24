@@ -1,12 +1,15 @@
 # coding=utf8
-#
-# Python parser for toml (Tom's Obvious, Minimal Language)
-# Home: https://github.com/mojombo/toml
-# Note: This is an improved version of \
-# toml-ply(https://github.com/marksteve/toml-ply)
-# License: MIT
-#
 
+"""
+  Python parser for TOML(https://github.com/mojombo/toml)
+  Note
+    This is an improved version of
+    toml-ply(https://github.com/marksteve/toml-ply)
+  License: MIT
+  Author: hit9
+"""
+
+# Current support TOML's version
 __version__ = '0.1'
 
 from ply import lex
@@ -17,9 +20,7 @@ from datetime import datetime
 class TomlSyntaxError(SyntaxError):
     pass
 
-
-# year-month-day-T-hour-minute-timezone
-ISO8601 = "%Y-%m-%dT%H:%M:%SZ"
+DATETIME_ISO8601_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
 
 tokens = (
     "BOOLEN",
@@ -29,24 +30,20 @@ tokens = (
     "DATETIME",
     "STRING",
     "FLOAT",
-    "INTEGER",
+    "INTEGER"
 )
 
-literals = ["[", "]", ","]
+literals = '[],'
 
-# ignore space(x20) and tab(x09)
-t_ignore = "\x20\x09"
+t_ignore = "\x20\x09"  # ignore space(x20) and tab(x09)
 
-# comments
-# key = "value" # Yeah, you can do this.
-t_ignore_COMMENT = r'\#.*'
+t_ignore_COMMENT = r'\#.*'  # comments
 
-
-t_EQUALS = r"="
+t_EQUALS = r'='
 
 
 def t_BOOLEN(t):
-    r'true|false'
+    r'true | false'
     t.value = (t.value == "true")
     return t
 
@@ -56,22 +53,20 @@ def t_KEY(t):
     return t
 
 
-# keygroups can be nested. so use tuple to store this.
-# e.g. [a.b.c] => ('a', 'b', 'c')
 def t_KEYGROUP(t):
     r'\[([a-zA-Z_][a-zA-Z0-9_#\?]*\.?)+\]'
-    t.value = tuple(t.value[1:-1].split('.'))
+    t.value = tuple(t.value[1:-1].split('.'))  # cast to group
     return t
 
 
 # ISO 8601 dates: 1979-05-27T07:32:00Z
 def t_DATETIME(t):
     r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z'
-    t.value = datetime.strptime(t.value, ISO8601)
+    t.value = datetime.strptime(t.value, DATETIME_ISO8601_FORMAT)
     return t
 
 
-# escape string
+# escaping string
 # \b     - backspace       (U+0008)     [x]
 # \t     - tab             (U+0009)     [x]
 # \n     - linefeed        (U+000A)     [x]
@@ -81,14 +76,11 @@ def t_DATETIME(t):
 # \/     - slash           (U+002F)     [-]
 # \\     - backslash       (U+005C)     [x]
 # \uXXXX - unicode         (U+XXXX)     [-]
-# But i dont think toml should escape this char: /
-# see mojombo/toml/issue#173. I dont want to escape forward slashes
 def t_STRING(t):
     r'\"([^\\\n]|(\\.))*?\"'
-    # remove fisrt double quote and last double quote as value
     s = t.value[1:-1]
-    # handle escaping characters
-    c = 0
+
+    c = 0  # index to go through the string
     l = len(s)
     o = ""
 
@@ -120,17 +112,12 @@ def t_STRING(t):
     return t
 
 
-# Feeling negative? Do what's natural.
-# toml means, don't use this: +1.79, use 1.79 instead
 def t_FLOAT(t):
     r'([-]?(\d+)(\.\d+)(e(\+|-)?(\d+))? | (\d+)e(\+|-)?(\d+))([lL]|[fF])?'
     t.value = float(t.value)
     return t
 
 
-# dont use +4,  use 4 instead.
-# negative integer is ok: -4
-# TODO: to forbid this format: 04
 def t_INTEGER(t):
     r'[-]?\d+([uU]|[lL]|[uU][lL]|[lL][uU])?'
     t.value = int(t.value)
@@ -148,32 +135,28 @@ def t_error(t):
     )
 
 
-# build lexer
-lex.lex()
+lex.lex()  # build lexer
 
-# return dict
-dct = None
-# temp global var to record keygroup
-keygroup = None
 
+dct = None  # dict object for parser to return
+
+keygroup = None  # to record current group
 
 def p_error(p):
     if p:
         raise TomlSyntaxError(
-            "SyntaxError: character '%s' at line %d , token is: %r" % (p.value[0], p.lineno, p)
+            "Character '%s' at line %d, token: %r" % (p.value[0], p.lineno, p)
         )
     else:
         raise TomlSyntaxError("SyntaxError at EOF")
 
 
-# start rule, store dct
-def p_start(p):
+def p_start(p):  # parser start here
     "start : translation_unit"
     p[0] = dct
 
 
-# unit to lookup all assignments
-def p_translation_unit(p):
+def p_translation_unit(p):  # unit to find out all assignments
     """
     translation_unit : assignment
                      | translation_unit assignment
@@ -182,22 +165,23 @@ def p_translation_unit(p):
     pass
 
 
-# lookup all keys
-def p_assignment_keys(p):
-    """assignment : KEY EQUALS value"""
-    # TODO: if key already in dct, raise error
-    # ref dct
+def p_assignment_key(p):  # look up all keys
+    """
+    assignment : KEY EQUALS value
+    """
     d = dct
-    # slide to the current keygroup's dict
+    # slide to the current keygroup's depth
     for key in keygroup:
         d = d[key]
+
     d[p[1]] = p[3]
 
 
-# lookup all keygroups
-def p_assignment_keygroup(p):
-    """assignment : KEYGROUP
-                  | assignment KEYGROUP"""
+def p_assignment_keygroup(p):  # look up all keygroups
+    """
+    assignment : KEYGROUP
+               | assignment KEYGROUP
+    """
     global keygroup
     keygroup = p[len(p) - 1]
 
