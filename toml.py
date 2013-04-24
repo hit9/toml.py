@@ -13,7 +13,6 @@ from ply import lex
 from ply import yacc
 from datetime import datetime
 
-
 DATETIME_ISO8601_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
 
 
@@ -128,10 +127,6 @@ class TomlLexer(object):
         self.lexer = lex.lex(module=self)
 
 
-# build the lexer
-toml_lexer = TomlLexer()
-
-
 class TomlParser(object):
 
     tokens = TomlLexer.tokens
@@ -229,8 +224,8 @@ class TomlParser(object):
         return self.parser.parse(toml_str)
 
 
-# build parser
-parser = TomlParser()
+toml_lexer = TomlLexer()  # build lexer
+parser = TomlParser()  # build parser
 
 
 def loads(toml_str):
