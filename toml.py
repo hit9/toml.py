@@ -59,16 +59,6 @@ class TomlLexer(object):
         t.value = datetime.strptime(t.value, DATETIME_ISO8601_FORMAT)
         return t
 
-    # escaping string
-    # \b     - backspace       (U+0008)     [x]
-    # \t     - tab             (U+0009)     [x]
-    # \n     - linefeed        (U+000A)     [x]
-    # \f     - form feed       (U+000C)     [x]
-    # \r     - carriage return (U+000D)     [x]
-    # \"     - quote           (U+0022)     [x]
-    # \/     - slash           (U+002F)     [-]
-    # \\     - backslash       (U+005C)     [x]
-    # \uXXXX - unicode         (U+XXXX)     [-]
     def t_STRING(self, t):
         r'\"([^\\\n]|(\\.))*?\"'
         s = t.value[1:-1]
@@ -76,6 +66,17 @@ class TomlLexer(object):
         c = 0  # index to go through the string
         l = len(s)
         o = ""
+
+        # escaping string
+        # \b     - backspace       (U+0008)     [x]
+        # \t     - tab             (U+0009)     [x]
+        # \n     - linefeed        (U+000A)     [x]
+        # \f     - form feed       (U+000C)     [x]
+        # \r     - carriage return (U+000D)     [x]
+        # \"     - quote           (U+0022)     [x]
+        # \/     - slash           (U+002F)     [-]
+        # \\     - backslash       (U+005C)     [x]
+        # \uXXXX - unicode         (U+XXXX)     [-]
 
         while c < l:
             if s[c] == "\\":
@@ -127,6 +128,10 @@ class TomlLexer(object):
         self.lexer = lex.lex(module=self)
 
 
+# build the lexer
+toml_lexer = TomlLexer()
+
+
 class TomlParser(object):
 
     tokens = TomlLexer.tokens
@@ -164,6 +169,9 @@ class TomlParser(object):
         for key in self.keygroup:
             d = d[key]
 
+        # if duplicate, recover the old one
+        # But I really dont know how to raise an error here
+        # raise statement seems not working here
         d[p[1]] = p[3]
 
     def p_assignment_keygroup(self, p):
@@ -224,8 +232,8 @@ class TomlParser(object):
         return self.parser.parse(toml_str)
 
 
-toml_lexer = TomlLexer()  # build lexer
-parser = TomlParser()  # build parser
+# build parser
+parser = TomlParser()
 
 
 def loads(toml_str):
