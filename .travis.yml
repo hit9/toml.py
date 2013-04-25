@@ -13,4 +13,4 @@ branches:
   only:
     - dev
 
-script: cd tests && python tests/tests.py
+script: cd tests && python tests.py
