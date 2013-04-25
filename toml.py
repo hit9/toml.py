@@ -230,6 +230,8 @@ class TomlParser(object):
 
 class TomlGenerator(object):  # generate toml string from valid python dict
 
+    g_newline = "\n"
+
     def g_string(self, v):
         return '"' + v + '"'
 
@@ -264,31 +266,31 @@ class TomlGenerator(object):  # generate toml string from valid python dict
         elif isinstance(v, list):
             return self.g_array(v)
         else:
-            raise TomlSyntaxError("Invalid data: %r" % v)
+            raise TomlSyntaxError("Invalid data type: %r" % (type(v), ))
 
     def gen_section(self, dct, keygroup):
-        section, body = "", ""
+        section, body = [], []
 
         for key, value in dct.iteritems():
             if isinstance(value, dict):
-                section += self.gen_section(value, keygroup + [key])
+                section.append(self.gen_section(value, keygroup + [key]))
             else:
-                body += key + " = " + self.gen_value(value) + "\n"
+                body.append(key + " = " + self.gen_value(value))
 
         if body and keygroup:
-            # if body not empty, display this section
-            # and if keygroup not empty, display this section
-            body = "[" + ".".join(keygroup) + "]\n" + body
+            body.insert(0, "[" + ".".join(keygroup) + "]")
 
-        return body + section
+        return self.g_newline.join(body + section)
 
 
 lexer = TomlLexer()  # build lexer
 parser = TomlParser()  # build parser
 generator = TomlGenerator()  # init a Generator instance
 
+
 def loads(toml_str):
     return parser.parse(toml_str)
+
 
 def dumps(dct):
     return generator.gen_section(dct, [])
