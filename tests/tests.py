@@ -14,7 +14,12 @@ from toml import TomlSyntaxError as e
 
 
 def readf(name):
-    return open(os.path.join("tomls", name + ".toml")).read()
+    if time == 0:
+        p = os.path.join("tomls", name + ".toml")
+    else:
+        p = os.path.join("_tomls", name + ".toml")
+    print "Read from: " + p
+    return open(p).read()
 
 
 def t(func):
@@ -25,6 +30,11 @@ def t(func):
     def _t():
         # read file by filename
         dct = toml.loads(readf(name))
+        # write to  _toml/..
+        p = os.path.join("_tomls", name + ".toml")
+        print "Dump to: " + p
+        c = toml.dumps(dct)
+        open(p, "w").write(c)
         return func(dct)
     return _t
 
@@ -35,9 +45,19 @@ def u(func):
 
     @wraps(func)
     def _u():
+        print "Unicode Tests: ",
         dct = toml.loads(readf(name).decode("utf8"))
+        p = os.path.join("_tomls", name + ".toml")
+        print "Dump to: " + p
+        c = toml.dumps(dct)
+        open(p, "w").write(c.encode("utf8"))
         return func(dct)
     return _u
+
+
+###############################
+# test parser
+###############################
 
 
 @t
@@ -196,3 +216,11 @@ def test_hard_example(dct):
 def test_example(dct):
     print "Official test suite: example.toml"
     assert dct == yaml.load(open("yaml/example.yaml").read())
+
+time = 0
+
+if __name__ == '__main__':
+    import nose
+    nose.run(argv=['tests.py', '-v', '-x', '--process-timeout=10', '--nocapture'])
+    time += 1
+    nose.run(argv=['tests.py', '-v', '-x', '--process-timeout=10', '--nocapture'])

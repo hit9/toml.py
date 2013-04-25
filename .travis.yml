@@ -13,4 +13,4 @@ branches:
   only:
     - dev
 
-script: nosetests -v -x --process-timeout=10 -w tests --nocapture
+script: cd tests && python tests/tests.py
