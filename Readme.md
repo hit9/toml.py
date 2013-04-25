@@ -20,8 +20,8 @@ Codes on branch master are tested.
 
     pip install git+git://github.com/hit9/toml.py.git@master
 
-Use
-----
+Parser
+------
 
 ```python
 >>> import toml
@@ -65,6 +65,19 @@ from command line:
 $ echo "n = 1.3" | python -m toml
 {'n': 1.3}
 
+```
+
+Generator
+---------
+
+```python
+>>> import toml
+>>> print toml.dumps({'blog': {'author': {'age': 14, 'score': 9.99, 'name': 'Tom', 'is_child': True}}})
+[blog.author]
+age = 14
+score = 9.99
+name = "Tom"
+is_child = true
 ```
 
 Sepcific Notes
@@ -156,6 +169,8 @@ As you see, terminating commas are ok before the closing bracket.
 
 Tests
 -----
+
+So far,  only tested for parser.
 
     $ nosetests -w tests
 
