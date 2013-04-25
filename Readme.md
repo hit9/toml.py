@@ -20,8 +20,8 @@ Codes on branch master are tested.
 
     pip install git+git://github.com/hit9/toml.py.git@master
 
-Use
-----
+Parser
+------
 
 ```python
 >>> import toml
@@ -67,6 +67,19 @@ $ echo "n = 1.3" | python -m toml
 
 ```
 
+Generator
+---------
+
+```python
+>>> import toml
+>>> print toml.dumps({'blog': {'author': {'age': 14, 'score': 9.99, 'name': 'Tom', 'is_child': True}}})
+[blog.author]
+age = 14
+score = 9.99
+name = "Tom"
+is_child = true
+```
+
 Sepcific Notes
 --------------
 
@@ -74,7 +87,7 @@ Sepcific Notes
 
 1. Negative integer and float is ok: `-1` `-0.9`, but positive integer or float in this format is not allowed: `+9` `+8.8`
 
-2. Booleans are always lowercase.
+2. Boolens are always lowercase.
 
 3. Arrays also ignore newlines between the brackets:
 ```python
@@ -157,6 +170,8 @@ As you see, terminating commas are ok before the closing bracket.
 Tests
 -----
 
+So far,  only tested for parser.
+
     $ nosetests -w tests
 
 TODO
@@ -165,10 +180,6 @@ TODO
 1. error handle (Any Good way? I dont know how to raise error in `p_` prefixed
 function!!)
 
-2. more tests(Welcome for your tests suite)
+2. Unimplemented: Data types may not be mixed. (Later..)
 
-3. Unimplemented: Data types may not be mixed. (Later..)
-
-4. Need to forbid this formart of integer? `04`
-
-5. which way is better? update already exist key or raise error instead.
+3. which way is better? update already exist key or raise error instead.

@@ -128,10 +128,6 @@ class TomlLexer(object):
         self.lexer = lex.lex(module=self)
 
 
-# build the lexer
-toml_lexer = TomlLexer()
-
-
 class TomlParser(object):
 
     tokens = TomlLexer.tokens
@@ -232,12 +228,90 @@ class TomlParser(object):
         return self.parser.parse(toml_str)
 
 
-# build parser
-parser = TomlParser()
+class TomlGenerator(object):  # generate toml string from valid python dict
+
+    g_newline = "\n"
+
+    def g_string(self, v):
+        # annoying escaping chars :)
+        o = ""
+        esc_chars = {
+            "\t": "t",
+            "\n": "n",
+            "\"": '"',
+            "\r": "r",
+            "\\": "\\",
+            "\f": "f",
+            "\b": "b",
+        }
+
+        for c in v:
+            if c in esc_chars:
+                o += "\\" + esc_chars[c]
+            else:
+                o += c
+
+        return '"' + o + '"'
+
+    def g_bool(self, v):
+        return "true" if v else "false"
+
+    def g_integer(self, v):
+        return str(v)
+
+    def g_float(self, v):
+        return str(v)
+
+    def g_datetime(self, v):
+        return v.strftime(DATETIME_ISO8601_FORMAT)
+
+    def g_array(self, v):
+        lst = [self.gen_value(i) for i in v]
+        return "[" + ", ".join(lst) + "]"
+
+    def gen_value(self, v):
+        # generate toml format of python data
+        if isinstance(v, basestring):
+            return self.g_string(v)
+        elif isinstance(v, bool):
+            return self.g_bool(v)
+        elif isinstance(v, int):
+            return self.g_integer(v)
+        elif isinstance(v, float):
+            return self.g_float(v)
+        elif isinstance(v, datetime):
+            return self.g_datetime(v)
+        elif isinstance(v, list):
+            return self.g_array(v)
+        else:
+            raise TomlSyntaxError("Invalid data type: %r" % (type(v), ))
+
+    def gen_section(self, dct, keygroup):
+        section, body = [], []
+
+        for key, value in dct.iteritems():
+            if isinstance(value, dict):
+                section.append(self.gen_section(value, keygroup + [key]))
+            else:
+                body.append(key + " = " + self.gen_value(value))
+
+        if body and keygroup:
+            body.insert(0, "[" + ".".join(keygroup) + "]")
+
+        return self.g_newline.join(body + section)
+
+
+lexer = TomlLexer()  # build lexer
+parser = TomlParser()  # build parser
+generator = TomlGenerator()  # init a Generator instance
 
 
 def loads(toml_str):
     return parser.parse(toml_str)
+
+
+def dumps(dct):
+    return generator.gen_section(dct, [])
 
 if __name__ == '__main__':
     exit(loads(raw_input()))
