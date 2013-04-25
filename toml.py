@@ -233,7 +233,25 @@ class TomlGenerator(object):  # generate toml string from valid python dict
     g_newline = "\n"
 
     def g_string(self, v):
-        return '"' + v + '"'
+        # annoying escaping chars :)
+        o = ""
+        esc_chars = {
+            "\t": "t",
+            "\n": "n",
+            "\"": '"',
+            "\r": "r",
+            "\\": "\\",
+            "\f": "f",
+            "\b": "b",
+        }
+
+        for c in v:
+            if c in esc_chars:
+                o += "\\" + esc_chars[c]
+            else:
+                o += c
+
+        return '"' + o + '"'
 
     def g_bool(self, v):
         return "true" if v else "false"
