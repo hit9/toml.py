@@ -111,13 +111,13 @@ def test_bad_integer():
 
 @u
 def test_unicode(dct):
-    assert dct == {u"name": u"ä½ å¥½!", u"title": u"æ±¤å§"}
+    assert dct == {u"name": u"你好!", u"title": u"汤姆"}
 
 
 @t
 def test_chinese(dct):
     assert dct == dict(
-        name="å°æ",
+        name="小明",
         email="xiaoming@126.com"
     )
 
@@ -164,7 +164,7 @@ def test_keygroup(dct):
 @t
 def test_array(dct):
     assert dct == {
-        "a": ["ä½ ", "æ¯", "è°"],
+        "a": ["你", "是", "谁"],
         "b": [1, 2, 3, ]
     }
 
