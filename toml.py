@@ -230,9 +230,6 @@ class TomlParser(object):
 
 class TomlGenerator(object):  # generate toml string from valid python dict
 
-    def __init__(self):
-        pass
-
     def g_string(self, v):
         return '"' + v + '"'
 
@@ -248,8 +245,12 @@ class TomlGenerator(object):  # generate toml string from valid python dict
     def g_datetime(self, v):
         return v.strftime(DATETIME_ISO8601_FORMAT)
 
-    def gen_value(self, v):
+    def g_array(self, v):
+        lst = [self.gen_value(i) for i in v]
+        return "[" + ", ".join(lst) + "]"
 
+    def gen_value(self, v):
+        # generate toml format of python data
         if isinstance(v, basestring):
             return self.g_string(v)
         elif isinstance(v, bool):
@@ -260,15 +261,15 @@ class TomlGenerator(object):  # generate toml string from valid python dict
             return self.g_float(v)
         elif isinstance(v, datetime):
             return self.g_datetime(v)
+        elif isinstance(v, list):
+            return self.g_array(v)
         else:
             raise TomlSyntaxError("Invalid data: %r" % v)
 
     def gen_section(self, dct, keygroup):
-
         section, body = "", ""
 
         for key, value in dct.iteritems():
-
             if isinstance(value, dict):
                 section += self.gen_section(value, keygroup + [key])
             else:
