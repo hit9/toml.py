@@ -128,10 +128,6 @@ class TomlLexer(object):
         self.lexer = lex.lex(module=self)
 
 
-# build the lexer
-toml_lexer = TomlLexer()
-
-
 class TomlParser(object):
 
     tokens = TomlLexer.tokens
@@ -232,8 +228,8 @@ class TomlParser(object):
         return self.parser.parse(toml_str)
 
 
-# build parser
-parser = TomlParser()
+lexer = TomlLexer()  # build lexer
+parser = TomlParser()  # build parser
 
 
 def loads(toml_str):
