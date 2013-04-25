@@ -228,12 +228,69 @@ class TomlParser(object):
         return self.parser.parse(toml_str)
 
 
+class TomlGenerator(object):  # generate toml string from valid python dict
+
+    def __init__(self):
+        pass
+
+    def g_string(self, v):
+        return '"' + v + '"'
+
+    def g_bool(self, v):
+        return "true" if v else "false"
+
+    def g_integer(self, v):
+        return str(v)
+
+    def g_float(self, v):
+        return str(v)
+
+    def g_datetime(self, v):
+        return v.strftime(DATETIME_ISO8601_FORMAT)
+
+    def gen_value(self, v):
+
+        if isinstance(v, basestring):
+            return self.g_string(v)
+        elif isinstance(v, bool):
+            return self.g_bool(v)
+        elif isinstance(v, int):
+            return self.g_integer(v)
+        elif isinstance(v, float):
+            return self.g_float(v)
+        elif isinstance(v, datetime):
+            return self.g_datetime(v)
+        else:
+            raise TomlSyntaxError("Invalid data: %r" % v)
+
+    def gen_section(self, dct, keygroup):
+
+        section, body = "", ""
+
+        for key, value in dct.iteritems():
+
+            if isinstance(value, dict):
+                section += self.gen_section(value, keygroup + [key])
+            else:
+                body += key + " = " + self.gen_value(value) + "\n"
+
+        if body and keygroup:
+            # if body not empty, display this section
+            # and if keygroup not empty, display this section
+            body = "[" + ".".join(keygroup) + "]\n" + body
+
+        return body + section
+
+
 lexer = TomlLexer()  # build lexer
 parser = TomlParser()  # build parser
-
+generator = TomlGenerator()  # init a Generator instance
 
 def loads(toml_str):
     return parser.parse(toml_str)
+
+def dumps(dct):
+    return generator.gen_section(dct, [])
 
 if __name__ == '__main__':
     exit(loads(raw_input()))
