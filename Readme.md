@@ -5,7 +5,7 @@ Python parser for [mojombo/toml](https://github.com/mojombo/toml).
 
 Improved version of [marksteve/toml-ply](https://github.com/marksteve/toml-ply)
 
-[![Build Status](https://travis-ci.org/hit9/toml.py.png?branch=dev)](https://travis-ci.org/hit9/toml.py)
+[![Build Status](https://travis-ci.org/hit9/toml.py.png?branch=master)](https://travis-ci.org/hit9/toml.py)
 
 Support
 -------
@@ -79,6 +79,11 @@ score = 9.99
 name = "Tom"
 is_child = true
 ```
+
+Exception
+----------
+
+The only exception may occur during parsing: `TomlSyntaxError`.
 
 Sepcific Notes
 --------------
