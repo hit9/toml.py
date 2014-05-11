@@ -12,7 +12,7 @@ Support
 
 Version [V0.1](https://github.com/mojombo/toml/blob/master/versions/toml-v0.1.0.md) of toml.
 
-Python 2.5+ (include Python3)
+**Python>=2.5 or >=3.3**
 
 Install
 -------
