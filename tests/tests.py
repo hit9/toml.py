@@ -2,6 +2,8 @@
 # run test for toml.py
 #
 
+from __future__ import print_function
+
 import os
 import sys
 import yaml
@@ -11,6 +13,13 @@ from functools import wraps
 sys.path.append("..")
 import toml
 from toml import TomlSyntaxError as e
+
+import sys
+
+if sys.hexversion < 0x03000000:
+    PY_VERSION = 2
+else:
+    PY_VERSION = 3
 
 
 def readf(name):
@@ -35,7 +44,10 @@ def u(func):
 
     @wraps(func)
     def _u():
-        dct = toml.loads(readf(name).decode("utf8"))
+        if PY_VERSION == 2:
+            dct = toml.loads(readf(name).decode("utf8"))
+        else:
+            dct = toml.loads(readf(name))
         return func(dct)
     return _u
 
@@ -87,7 +99,7 @@ def test_integer(dct):
         a=1,
         b=999,
         c=-888,
-        d=05
+        d=5
     )
 
 
@@ -188,11 +200,11 @@ def test_empty_keygroup(dct):
 ########################################
 @t
 def test_hard_example(dct):
-    print "Official test suite: hard_example.toml"
+    print("Official test suite: hard_example.toml")
     assert dct == yaml.load(open("yaml/hard_example.yaml").read())
 
 
 @t
 def test_example(dct):
-    print "Official test suite: example.toml"
+    print("Official test suite: example.toml")
     assert dct == yaml.load(open("yaml/example.yaml").read())
