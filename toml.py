@@ -9,11 +9,17 @@
 
 __version__ = '0.1'  # Current supported Toml's version
 
+import sys
 from ply import lex
 from ply import yacc
 from datetime import datetime
 
 DATETIME_ISO8601_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
+
+if sys.version_info >= (3, 0):
+    PY_VERSION = 3
+else:
+    PY_VERSION = 2
 
 
 class TomlSyntaxError(SyntaxError):
@@ -289,7 +295,7 @@ class TomlGenerator(object):  # generate toml string from valid python dict
     def gen_section(self, dct, keygroup):
         section, body = [], []
 
-        for key, value in dct.iteritems():
+        for key, value in dct.items():
             if isinstance(value, dict):
                 section.append(self.gen_section(value, keygroup + [key]))
             else:
@@ -314,4 +320,8 @@ def dumps(dct):
     return generator.gen_section(dct, [])
 
 if __name__ == '__main__':
-    exit(loads(raw_input()))
+    if PY_VERSION == 2:
+        input_string = raw_input()
+    elif PY_VERSION == 3:
+        input_string = input()
+    exit(loads(input_string))
