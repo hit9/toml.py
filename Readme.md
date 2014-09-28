@@ -86,7 +86,7 @@ Exception
 
 The only exception may occur during parsing: `TomlSyntaxError`.
 
-Sepcific Notes
+Specific Notes
 --------------
 
 **Each piece of notes bellow comes from [mojombo/toml](https://github.com/mojombo/toml)**, just implemented in toml.py
