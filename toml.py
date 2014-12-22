@@ -12,6 +12,7 @@ __version__ = '0.1'  # Current supported Toml's version
 import sys
 from ply import lex
 from ply import yacc
+from six import string_types
 from datetime import datetime
 
 DATETIME_ISO8601_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
@@ -277,7 +278,7 @@ class TomlGenerator(object):  # generate toml string from valid python dict
 
     def gen_value(self, v):
         # generate toml format of python data
-        if isinstance(v, basestring):
+        if isinstance(v, string_types):
             return self.g_string(v)
         elif isinstance(v, bool):
             return self.g_bool(v)
