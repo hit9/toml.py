@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name="toml.py",
-    version="0.1.3",
+    version="0.1.4",
     author="hit9",
     author_email="nz2324@126.com",
     description=(
