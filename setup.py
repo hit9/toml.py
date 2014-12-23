@@ -16,5 +16,5 @@ setup(
     keywords="toml, parser",
     url="https://github.com/hit9/toml.py",
     py_modules=["toml"],
-    install_requires=["ply"]
+    install_requires=["ply", "six"]
 )
