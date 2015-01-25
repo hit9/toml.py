@@ -102,7 +102,7 @@ class TomlLexer(object):
 
     # This needs to be before escape characters to ensure it is handled first
     def t_mulstr_trimmedwhitespace(self, t):
-        r'\\[ \n\t]+'
+        r'\\\n?'
         t.lexer.lineno += t.value.count("\n")
         pass
 
@@ -128,7 +128,7 @@ class TomlLexer(object):
 
     # String handling: multiline literal strings
     def t_trisinglequote(self, t):
-        r'\'\'\'[ \n\t]*'
+        r'\'\'\'\n?'
         t.lexer.lineno += t.value.count("\n")
         t.lexer.helperstr = ""
         t.lexer.push_state('mulliteral')
