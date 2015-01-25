@@ -45,7 +45,7 @@ class TomlLexer(object):
         "FLOAT",
         "INTEGER",
     )
-    
+
     states = (
         ('string', 'exclusive'),
         ('mulstr', 'exclusive'),
@@ -80,64 +80,64 @@ class TomlLexer(object):
         r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z'
         t.value = datetime.strptime(t.value, DATETIME_ISO8601_FORMAT)
         return t
-    
+
     # String handling: multiline strings
     def t_triquote(self, t):
         r'\"\"\"'
         t.lexer.helperstr = ""
         t.lexer.push_state('mulstr')
-    
+
     def t_mulstr_triquote(self, t):
         r'\"\"\"'
         t.value = t.lexer.helperstr
         t.type = "STRING"
         t.lexer.pop_state()
         return t
-    
+
     def t_mulstr_mulliteral_newline(self, t):
         r'\n'
         t.lexer.lineno += 1
         t.lexer.helperstr += "\n"
-    
+
     # String handling: strings
     def t_quote(self, t):
         r'\"'
         t.lexer.helperstr = ""
         t.lexer.push_state('string')
-    
+
     def t_string_quote(self, t):
         r'\"'
         t.value = t.lexer.helperstr
         t.type = "STRING"
         t.lexer.pop_state()
         return t
-    
+
     def t_string_literal_newline(self, t):
         r'\n'
         t.lexer.begin('INITIAL')    # Reset state so next parse works
         raise TomlSyntaxError(
             "Illegal newline in string at Line %d" % t.lineno
         )
-    
+
     # String handling: multiline literal strings
     def t_trisinglequote(self, t):
         r'\'\'\''
         t.lexer.helperstr = ""
         t.lexer.push_state('mulliteral')
-    
+
     def t_mulliteral_trisinglequote(self, t):
         r'\'\'\''
         t.value = t.lexer.helperstr
         t.type = "STRING"
         t.lexer.pop_state()
         return t
-    
+
     # String handling: literal strings
     def t_singlequote(self, t):
         r'\''
         t.lexer.helperstr = ""
         t.lexer.push_state('literal')
-    
+
     def t_literal_singlequote(self, t):
         r'\''
         t.value = t.lexer.helperstr
@@ -149,48 +149,48 @@ class TomlLexer(object):
     def t_string_mulstr_backslash(self, t):
         r'\\'
         t.lexer.push_state('escape')
-    
+
     def t_escape_backspace(self, t):
         r'b'
         t.lexer.helperstr += "\b"
         t.lexer.pop_state()
-        
+
     def t_escape_tab(self, t):
         r't'
         t.lexer.helperstr += "\t"
         t.lexer.pop_state()
-    
+
     def t_escape_linefeed(self, t):
         r'n'
         t.lexer.helperstr += "\n"
         t.lexer.pop_state()
-    
+
     def t_escape_form_feed(self, t):
         r'f'
         t.lexer.helperstr += "\f"
         t.lexer.pop_state()
-    
+
     def t_escape_carriage_return(self, t):
         r'r'
         t.lexer.helperstr += "\r"
         t.lexer.pop_state()
-    
+
     def t_escape_quote(self, t):
         r'\"'
         t.lexer.helperstr += "\""
         t.lexer.pop_state()
-    
+
     def t_escape_backslash(self, t):
         r'\\'
         t.lexer.helperstr += "\\"
         t.lexer.pop_state()
-    
+
     def t_escape_unicode(self, t):
         r'(u[a-fA-F0-9]{4,4}|U[a-fA-F0-9]{8,8})'
         u = _unicode_escape_("\\" + t.value)
         t.lexer.helperstr += u
         t.lexer.pop_state()
-    
+
     # Catch all rule needs to be the last to avoid conflict with previous
     # more specific rules
     def t_string_mulstr_literal_mulliteral_char(self, t):
