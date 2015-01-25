@@ -89,7 +89,8 @@ def test_multiline_string(dct):
         e="\f",
         f="\r",
         g="\"",
-        h="\\"
+        h="\\",
+        i="TestTest"
     )
 
 @t
@@ -105,7 +106,7 @@ def test_literal_string(dct):
 def test_multiline_literal_string(dct):
     assert dct == dict(
         regex2=r"I [dw]on't need \d{2} apples",
-        lines="\nThe first newline is\ntrimmed in raw strings.\n   All other whitespace\n   is preserved.\n"
+        lines="The first newline is\ntrimmed in raw strings.\n   All other whitespace\n   is preserved.\n"
     )
 
 @t
