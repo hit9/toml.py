@@ -10,7 +10,7 @@ import yaml
 from nose.tools import raises
 from functools import wraps
 
-sys.path.append("..")
+sys.path.insert(0, "..")
 import toml
 from toml import TomlSyntaxError as e
 
