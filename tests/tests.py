@@ -21,7 +21,6 @@ if sys.hexversion < 0x03000000:
 else:
     PY_VERSION = 3
 
-
 def readf(name):
     return open(os.path.join("tomls", name + ".toml")).read()
 
@@ -80,6 +79,34 @@ def test_string(dct):
         h="\\"
     )
 
+@t
+def test_multiline_string(dct):
+    assert dct == dict(
+        a="Yes,\nI am a string",
+        b="\b",
+        c="\t",
+        d="\n",
+        e="\f",
+        f="\r",
+        g="\"",
+        h="\\"
+    )
+
+@t
+def test_literal_string(dct):
+    assert dct == dict(
+        key1=r"C:\Users\nodejs\templates",
+        key2=r"\\ServerX\admin$\system32",
+        key3="Tom \"Dubs\" Preston-Werner",
+        key4=r"<\i\c*\s*>"
+    )
+
+@t
+def test_multiline_literal_string(dct):
+    assert dct == dict(
+        regex2=r"I [dw]on't need \d{2} apples",
+        lines="\nThe first newline is\ntrimmed in raw strings.\n   All other whitespace\n   is preserved.\n"
+    )
 
 @t
 def test_float(dct):
@@ -125,6 +152,9 @@ def test_bad_integer():
 def test_unicode(dct):
     assert dct == {u"name": u"你好!", u"title": u"汤姆"}
 
+@u
+def test_unicode_escape(dct):
+    assert dct == {u"a": u"é", u"b": u"é"}
 
 @t
 def test_chinese(dct):

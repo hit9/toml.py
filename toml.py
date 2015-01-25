@@ -23,6 +23,12 @@ else:
     PY_VERSION = 2
 
 
+def _unicode_escape_(s):
+    if(PY_VERSION != 2):
+        s = bytes(s, 'utf-8')
+    return s.decode('unicode-escape')
+
+
 class TomlSyntaxError(SyntaxError):
     pass
 
@@ -39,10 +45,19 @@ class TomlLexer(object):
         "FLOAT",
         "INTEGER",
     )
+    
+    states = (
+        ('string', 'exclusive'),
+        ('mulstr', 'exclusive'),
+        ('literal', 'exclusive'),
+        ('mulliteral', 'exclusive'),
+        ('escape', 'exclusive'),
+    )
 
     literals = "[],"
 
     t_ignore = "\x20\x09"  # ignore space(x20) and tab(x09)
+    t_string_mulstr_literal_mulliteral_escape_ignore = ""
     t_ignore_COMMENT = r'\#.*'  # comments
     t_EQUALS = r'='
 
@@ -65,52 +80,122 @@ class TomlLexer(object):
         r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z'
         t.value = datetime.strptime(t.value, DATETIME_ISO8601_FORMAT)
         return t
-
-    def t_STRING(self, t):
-        r'\"([^\\\n]|(\\.))*?\"'
-        s = t.value[1:-1]
-
-        c = 0  # index to go through the string
-        l = len(s)
-        o = ""
-
-        # escaping string
-        # \b     - backspace       (U+0008)     [x]
-        # \t     - tab             (U+0009)     [x]
-        # \n     - linefeed        (U+000A)     [x]
-        # \f     - form feed       (U+000C)     [x]
-        # \r     - carriage return (U+000D)     [x]
-        # \"     - quote           (U+0022)     [x]
-        # \/     - slash           (U+002F)     [-]
-        # \\     - backslash       (U+005C)     [x]
-        # \uXXXX - unicode         (U+XXXX)     [-]
-
-        while c < l:
-            if s[c] == "\\":
-                c += 1
-                if s[c] == "t":
-                    o += "\t"
-                elif s[c] == "n":
-                    o += "\n"
-                elif s[c] == '"':
-                    o += "\""
-                elif s[c] == "r":
-                    o += "\r"
-                elif s[c] == "\\":
-                    o += "\\"
-                elif s[c] == "f":
-                    o += "\f"
-                elif s[c] == "b":
-                    o += "\b"
-                else:
-                    raise TomlSyntaxError(
-                        "Unexpected escape character: %s" % s[c]
-                    )
-            else:
-                o += s[c]
-            c += 1
-        t.value = o
+    
+    # String handling: multiline strings
+    def t_triquote(self, t):
+        r'\"\"\"'
+        t.lexer.helperstr = ""
+        t.lexer.push_state('mulstr')
+    
+    def t_mulstr_triquote(self, t):
+        r'\"\"\"'
+        t.value = t.lexer.helperstr
+        t.type = "STRING"
+        t.lexer.pop_state()
         return t
+    
+    def t_mulstr_mulliteral_newline(self, t):
+        r'\n'
+        t.lexer.lineno += 1
+        t.lexer.helperstr += "\n"
+    
+    # String handling: strings
+    def t_quote(self, t):
+        r'\"'
+        t.lexer.helperstr = ""
+        t.lexer.push_state('string')
+    
+    def t_string_quote(self, t):
+        r'\"'
+        t.value = t.lexer.helperstr
+        t.type = "STRING"
+        t.lexer.pop_state()
+        return t
+    
+    def t_string_literal_newline(self, t):
+        r'\n'
+        t.lexer.begin('INITIAL')    # Reset state so next parse works
+        raise TomlSyntaxError(
+            "Illegal newline in string at Line %d" % t.lineno
+        )
+    
+    # String handling: multiline literal strings
+    def t_trisinglequote(self, t):
+        r'\'\'\''
+        t.lexer.helperstr = ""
+        t.lexer.push_state('mulliteral')
+    
+    def t_mulliteral_trisinglequote(self, t):
+        r'\'\'\''
+        t.value = t.lexer.helperstr
+        t.type = "STRING"
+        t.lexer.pop_state()
+        return t
+    
+    # String handling: literal strings
+    def t_singlequote(self, t):
+        r'\''
+        t.lexer.helperstr = ""
+        t.lexer.push_state('literal')
+    
+    def t_literal_singlequote(self, t):
+        r'\''
+        t.value = t.lexer.helperstr
+        t.type = "STRING"
+        t.lexer.pop_state()
+        return t
+
+    # Escape characters
+    def t_string_mulstr_backslash(self, t):
+        r'\\'
+        t.lexer.push_state('escape')
+    
+    def t_escape_backspace(self, t):
+        r'b'
+        t.lexer.helperstr += "\b"
+        t.lexer.pop_state()
+        
+    def t_escape_tab(self, t):
+        r't'
+        t.lexer.helperstr += "\t"
+        t.lexer.pop_state()
+    
+    def t_escape_linefeed(self, t):
+        r'n'
+        t.lexer.helperstr += "\n"
+        t.lexer.pop_state()
+    
+    def t_escape_form_feed(self, t):
+        r'f'
+        t.lexer.helperstr += "\f"
+        t.lexer.pop_state()
+    
+    def t_escape_carriage_return(self, t):
+        r'r'
+        t.lexer.helperstr += "\r"
+        t.lexer.pop_state()
+    
+    def t_escape_quote(self, t):
+        r'\"'
+        t.lexer.helperstr += "\""
+        t.lexer.pop_state()
+    
+    def t_escape_backslash(self, t):
+        r'\\'
+        t.lexer.helperstr += "\\"
+        t.lexer.pop_state()
+    
+    def t_escape_unicode(self, t):
+        r'(u[a-fA-F0-9]{4,4}|U[a-fA-F0-9]{8,8})'
+        u = _unicode_escape_("\\" + t.value)
+        t.lexer.helperstr += u
+        t.lexer.pop_state()
+    
+    # Catch all rule needs to be the last to avoid conflict with previous
+    # more specific rules
+    def t_string_mulstr_literal_mulliteral_char(self, t):
+        r'.'
+        t.lexer.helperstr += t.value
 
     def t_FLOAT(self, t):
         r'([-]?(\d+)(\.\d+)(e(\+|-)?(\d+))? | (\d+)e(\+|-)?(\d+))([lL]|[fF])?'
@@ -126,7 +211,8 @@ class TomlLexer(object):
         r'\n+'
         t.lexer.lineno += len(t.value)
 
-    def t_error(self, t):
+    def t_ANY_error(self, t):
+        t.lexer.begin('INITIAL')    # Reset state so next parse works
         raise TomlSyntaxError(
             "Illegal character: '%s' at Line %d" % (t.value[0], t.lineno)
         )
