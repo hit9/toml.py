@@ -133,17 +133,17 @@ As you see, terminating commas are ok before the closing bracket.
  >>> toml.loads("""date = 1979-05-27T07:32:00Z""")
 {'date': datetime.datetime(1979, 5, 27, 7, 32)}
 ```
-8. String escaping, `toml.py` dosen't implement the forward slash and `\uXXXX`
+8. In strings, all escapes from toml 0.3.1 are supported.
 ```
-\b     - backspace       (U+0008)     [x]
-\t     - tab             (U+0009)     [x]
-\n     - linefeed        (U+000A)     [x]
-\f     - form feed       (U+000C)     [x]
-\r     - carriage return (U+000D)     [x]
-\"     - quote           (U+0022)     [x]
-\/     - slash           (U+002F)     [-]
-\\     - backslash       (U+005C)     [x]
-\uXXXX - unicode         (U+XXXX)     [-]
+\b         - backspace       (U+0008)     [x]
+\t         - tab             (U+0009)     [x]
+\n         - linefeed        (U+000A)     [x]
+\f         - form feed       (U+000C)     [x]
+\r         - carriage return (U+000D)     [x]
+\"         - quote           (U+0022)     [x]
+\\         - backslash       (U+005C)     [x]
+\uXXXX     - unicode         (U+XXXX)     [x]
+\UXXXXXXXX - unicode         (U+XXXXXXXX) [x]
 ```
 ```python
 >>> toml.loads(r"""  # attention to the r here, use raw or unicode or \\\\
@@ -152,9 +152,36 @@ As you see, terminating commas are ok before the closing bracket.
 {'path': 'C:\\files\\MyPython\\'}
 ```
 
-9. The spaces and tabs should be in english mode.(notes for chinese .etc users.)
+9. Multiline strings are supported, but all whitespace is kept.
+```toml
+# This will return "\nThe quick brown \\nfox jumps over \\nthe lazy dog."""
+key1 = """
+The quick brown \
+fox jumps over \
+the lazy dog."""
+```
 
-10. keys can have char `?` and `#`
+Literal strings and multiline literal strings are supported, but all whitespacce is kept.
+```toml
+# What you see is what you get
+winpath  = 'C:\Users\nodejs\templates'
+winpath2 = '\\ServerX\admin$\system32\'
+quoted   = 'Tom "Dubs" Preston-Werner'
+regex    = '<\i\c*\s*>'
+
+regex2 = '''I [dw]on't need \d{2} apples'''
+# The first newline is actually kept
+lines  = '''
+The first newline is
+trimmed in raw strings.
+   All other whitespace
+   is preserved.
+   '''
+```
+
+10. The spaces and tabs should be in english mode.(notes for chinese .etc users.)
+
+11. keys can have char `?` and `#`
 
   ```
   >>> toml.loads(' what? = "Yeah!" ')
@@ -166,7 +193,7 @@ As you see, terminating commas are ok before the closing bracket.
   {'the#': False}
   ```
 
-11. if your `keygroup` ends with no keys:
+12. if your `keygroup` ends with no keys:
 
   ```
   >>> toml.loads("[NoKeysInThisGroup]")                              
