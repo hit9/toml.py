@@ -161,17 +161,17 @@ Specific Notes
    {'path': 'C:\\files\\MyPython\\'}
    ```
 
-9. Multiline strings are supported, but all whitespace is kept.
+9. Multiline strings are supported, as well as trimming whitespace.
 
    ```toml
-   # This will return "\nThe quick brown \\nfox jumps over \\nthe lazy dog."""
+   # This will return "The quick brown fox jumps over the lazy dog."""
    key1 = """
    The quick brown \
    fox jumps over \
    the lazy dog."""
    ```
 
-   Literal strings and multiline literal strings are supported, but all whitespacce is kept.
+   Literal strings and multiline literal strings are supported.
 
    ```toml
    # What you see is what you get
@@ -181,7 +181,6 @@ Specific Notes
    regex    = '<\i\c*\s*>'
    
    regex2 = '''I [dw]on't need \d{2} apples'''
-   # The first newline is actually kept
    lines  = '''
    The first newline is
    trimmed in raw strings.
