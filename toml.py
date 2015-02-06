@@ -62,10 +62,6 @@ class TomlLexer(object):
     t_ignore_COMMENT = r'\#.*'  # comments
     t_EQUALS = r'='
 
-    # to use with decorator to compose @TOKEN
-    # characters= r'[a-zA-Z_][a-zA-Z0-9_#\?]'
-
-
     def t_BOOLEN(self, t):
         r'true | false'
         t.value = (t.value == "true")
@@ -237,7 +233,7 @@ class TomlLexer(object):
         )
 
     def __init__(self):
-        self.lexer = lex.lex(module=self, debug=0)
+        self.lexer = lex.lex(module=self)
 
 
 class TomlParser(object):
@@ -254,7 +250,7 @@ class TomlParser(object):
             raise TomlSyntaxError("SyntaxError at EOF")
 
     def p_start(self, p):
-        # parser starts here because this is the first heredoc ?
+        # parser start here
         "start : translation_unit"
         p[0] = self.dct
 
@@ -319,10 +315,8 @@ class TomlParser(object):
         d = self.dct
 
         for key in self.keygroup:
-            
             # init the keygroup's value to empty dict
-            d = d.setdefault(key, {} )
-
+            d = d.setdefault(key, {})
 
     def p_value(self, p):
         # values can be array, int, datetime, float, string integer, boolen
@@ -360,8 +354,7 @@ class TomlParser(object):
             p[0] = p[1] + [p[3]]
 
     def __init__(self):
-        #
-        self.parser = yacc.yacc(module=self, write_tables=0, debug=0)
+        self.parser = yacc.yacc(module=self, debug=0, write_tables=0)
 
     def parse(self, toml_str):
         # reset dct and keygroup
@@ -451,9 +444,6 @@ generator = TomlGenerator()  # init a Generator instance
 def loads(toml_str):
     return parser.parse(toml_str)
 
-def loadFromFile(toml_filename):
-    with open(toml_filename) as f:
-        return loads( f.read() )
 
 def dumps(dct):
     return generator.gen_section(dct, [])

@@ -225,6 +225,12 @@ def test_empty_keygroup(dct):
         }
     }
 
+@t
+def test_keygroup_array(dct):
+    assert dct == {
+        "a": [  { "b": "abc" },
+                { "b": "def" } ]
+    }
 
 ########################################
 # official test suite
