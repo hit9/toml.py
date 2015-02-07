@@ -39,6 +39,7 @@ class TomlLexer(object):
         "BOOLEN",
         "KEY",
         "KEYGROUP",
+        "KEYGROUPARRAY",
         "EQUALS",
         "DATETIME",
         "STRING",
@@ -69,6 +70,12 @@ class TomlLexer(object):
     def t_KEY(self, t):
         r'[a-zA-Z_][a-zA-Z0-9_#\?]*'
         return t
+
+    def t_KEYGROUPARRAY(self, t):
+        r'\[\[([a-zA-Z_][a-zA-Z0-9_#\?]*\.?)+\]\]'
+        t.value = tuple(t.value[2:-2].split('.'))  # cast to group
+        return t
+
 
     def t_KEYGROUP(self, t):
         r'\[([a-zA-Z_][a-zA-Z0-9_#\?]*\.?)+\]'
@@ -266,10 +273,37 @@ class TomlParser(object):
         for key in self.keygroup:
             d = d[key]
 
+        if isinstance(d,list):
+            d = d[-1]
+
         # if duplicate, recover the old one
         # But I really dont know how to raise an error here
         # raise statement seems not working here
         d[p[1]] = p[3]
+
+    def p_assignment_keygroup_array(self, p):
+        # look up all keygroups
+        """
+        assignment : KEYGROUPARRAY
+                   | assignment KEYGROUPARRAY
+        """
+
+        self.keygroup = p[len(p) - 1]
+        listname = self.keygroup[-1]
+
+        d = self.dct
+
+        for key in self.keygroup[:-1]:
+            # init the keygroup's value to empty dict
+            d = d.setdefault(key, {})
+
+        # if it already exists, then insert a new array
+        mylist = d.get( listname )
+        if not mylist:
+            mylist = d.setdefault(listname, [] )
+
+        mylist.append({})
+
 
     def p_assignment_keygroup(self, p):
         # look up all keygroups
